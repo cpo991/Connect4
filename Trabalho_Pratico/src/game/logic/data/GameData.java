@@ -3,8 +3,7 @@ package game.logic.data;
 import game.utils.Utils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static game.logic.data.Constants.*;
 import static game.utils.Utils.randNum;
@@ -19,8 +18,11 @@ public class GameData {
     private Player Player1;
     private Player Player2;
     private int gameType; //1,2,3
+    private List<Piece> pieces;
     private List<String> words;
     private int wordsTime;
+    private int playerTurn;
+    private int gameTurn;
 
 
     public GameData(){
@@ -28,10 +30,20 @@ public class GameData {
         this.boardGame = new Character[Constants.LINE_NUM][COLUMN_NUM];
         this.words = new ArrayList<>();
         this.wordsTime = 0;
+        this.gameType = -1;
+        this.Player1 = new Player(1,"Player 1", false, 'Y');
+        this.Player2 = new Player(2,"Player 2", false, 'R');
+        this.pieces = new ArrayList<>();
+        this.gameTurn = 0;
     }
-
     public Player getPlayer1() { return Player1; }
     public Player getPlayer2() { return Player2; }
+
+    public int getWhosTurn() { return playerTurn; }
+    public void changeWhosTurn(){ if( playerTurn == 1) this.playerTurn = 2; else this.playerTurn = 1;}
+    public void flipCoin(){
+        Random random = new Random();
+        this.playerTurn = random.nextInt(2)+1;}
 
     public void setPlayer1(Player player) { Player1 = player;}
     public void setPlayer2(Player player) { Player2 = player; }
@@ -39,11 +51,10 @@ public class GameData {
     public int getPlayer1Turn() { return Player1.getTurn(); }
     public int getPlayer2Turn() { return Player2.getTurn(); }
 
+    public int getGamePlayNum() {return gameTurn;}
+
     public void setPlayer1Turn() { this.Player1.addTurn();}
     public void setPlayer2Turn() { this.Player2.addTurn();}
-
-    public void resetPlayer1Turn() {this.Player1.resetTurn();}
-    public void resetPlayer2Turn() {this.Player2.resetTurn();}
 
     public int getPlayer1Credits() { return Player1.getCredits();}
     public int getPlayer2Credits() { return Player2.getCredits();}
@@ -60,13 +71,27 @@ public class GameData {
     public Boolean isPlayer1Person() { return Player1.getIsPerson();}
     public Boolean isPlayer2Person() { return Player2.getIsPerson();}
 
+    public void resetPlayer1Turn(){ Player1.resetTurn();}
+    public void resetPlayer2Turn(){ Player2.resetTurn();}
+
+    public void setPlayer1SP(int num){ Player1.setSpecialPiece(num);}
+    public void setPlayer2SP(int num){ Player2.setSpecialPiece(num);}
+    
+    public Player getPlayerByNum(int num){ if (num == 1) return Player1; else return Player2;}
+    
+    public int getSpecialPiece(Player player){ return player.getSpecialPiece();}
+    
     public int getGameType(){ return gameType; }
 
     public void setGameType(int type){ this.gameType = type;}
 
-    public int flipCoin(){ return (int)(Math.random() + 1); }
-
     public Character[][] getBoardGame() { return boardGame; }
+
+    public Boolean fourInLine(Player player) {
+        if(isHorizontal(player) || isVertical(player) || isDiagonalNegative(player) || isDiagonalPositive(player))
+            return true;
+        return false;
+    }
 
     /**
      * Initializes the board with empty spaces
@@ -84,13 +109,14 @@ public class GameData {
      *
      * @param C the column selected by the player1 to insert a piece
      */
-    public void setPlayer1Piece(int C){
-        for (int L = LINE_NUM; L >= 0 ; L--) {
-            if(boardGame[L][C] == ' '){
-                boardGame[L][C] = getPlayer1Piece();
-                break;
+    public int setPlayerPiece(int C, Player player){
+        for (int L = LINE_NUM-1; L >= 0 ; L--) {
+            if(boardGame[L][C-1] == ' '){
+                boardGame[L][C-1] = player.getPiece();
+                return L;
             }
         }
+        return -1;
     }
 
     /**
@@ -98,13 +124,14 @@ public class GameData {
      *
      * @param C the column selected by the player2 to insert a piece
      */
-    public void setPlayer2Piece(int C){
-        for (int L = LINE_NUM; L >= 0 ; L--) {
-            if(boardGame[L][C] == ' '){
-                boardGame[L][C] = getPlayer2Piece();
-                break;
+    public int setPlayer2Piece(int C){
+        for (int L = LINE_NUM-1; L >= 0 ; L--) {
+            if(boardGame[L][C-1] == ' '){
+                boardGame[L][C-1] = getPlayer2Piece();
+                return L;
             }
         }
+        return -1;
     }
 
     /**
@@ -235,4 +262,22 @@ public class GameData {
     }
 
     public int getWordsTime() { return wordsTime; }
+
+    public void setPieceToList(Piece piece){
+        pieces.add(piece);
+    }
+
+    public void deleteFromBoard(int L, int C){
+        this.boardGame[L][C] = ' ';
+    }
+
+    public void removePieces(int num){
+        Collections.reverse(pieces);
+        for (int i = 0; i < num; i++) {
+            deleteFromBoard(pieces.get(i).getL(), pieces.get(i).getC());
+            pieces.get(i).setState('R');
+        }
+        Collections.reverse(pieces);
+    }
+
 }

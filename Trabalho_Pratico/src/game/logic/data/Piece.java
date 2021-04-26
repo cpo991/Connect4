@@ -8,12 +8,14 @@ public class Piece {
     private final Character piece;
     private final int L;
     private final int C;
+    private Character state; // A-active D-Deleted by special piece R-removed by rollback
 
-    public Piece(int order, Character piece, int l, int c) {
+    public Piece(int order, Character piece, int l, int c, char state) {
         this.order = order;
         this.piece = piece;
-        L = l;
-        C = c;
+        this.L = l;
+        this.C = c;
+        this.state = state;
     }
 
     public Character getPiece() { return piece; }
@@ -23,4 +25,6 @@ public class Piece {
     public int getL() { return L; }
 
     public int getC() { return C; }
+
+    public void setState(char s) { this.state = s; }
 }

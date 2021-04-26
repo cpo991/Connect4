@@ -3,14 +3,14 @@ package game.logic.data;
  *
  * @author Carolina Oliveira - 2017011988
  */
-public class Constants {
+public interface Constants {
 
-    static int COLUMN_NUM = 6;
-    static int LINE_NUM = 7;
+    int COLUMN_NUM = 7;
+    int LINE_NUM = 6;
 
-    static int MAX_CREDITS = 5;
+    int MAX_CREDITS = 5;
     int MAX_REPLAYS = 5;
 
-    static int MIN_WORDS = 1;
-    static int MAX_WORDS = 100;
+    int MIN_WORDS = 1;
+    int MAX_WORDS = 100;
 }

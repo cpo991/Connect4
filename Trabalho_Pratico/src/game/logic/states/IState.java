@@ -7,24 +7,45 @@ import game.logic.Situation;
  */
 public interface IState {
 
-    IState chooseGameMode();
-
-    IState chooseReplay();
-
-    IState chooseNames();
-
-    IState startGame();
-
-    IState chooseMenu();
-
-    IState startMathGame();
-
-    IState startWordsGame();
-
     Situation getCurrentSituation();
 
-    IState pickNames();
+    // ------------------------------------------------------------------------------------   AwaitBeginning
+    IState startGame();
+    IState chooseReplay();
 
+    // ------------------------------------------------------------------------------------   AwaitGameMode
+    IState chooseGameMode(int option);
+    IState previousMenu();
+
+    // ------------------------------------------------------------------------------------   AwaitPickingNames
+    IState pickNames(String name);
+
+    // ------------------------------------------------------------------------------------   AwaitDecision
     IState setPiece(int option);
+    IState chooseRollback();
+    IState startMiniGame();
 
+    // ------------------------------------------------------------------------------------   AwaitGamePicker
+    IState startMathGame();
+    IState startWordsGame();
+
+    // ------------------------------------------------------------------------------------   AwaitMathAnswer
+
+    // ------------------------------------------------------------------------------------   AwaitWordsAnswer
+
+
+    // ------------------------------------------------------------------------------------   AwaitPickingRollback
+    IState rollback(int num);
+
+
+    // ------------------------------------------------------------------------------------   EndGame
+    IState continuePlaying();
+
+
+
+
+    // ------------------------------------------------------------------------------------   AwaitPickingReplay
+
+
+    // ------------------------------------------------------------------------------------   AwaitReplay
 }

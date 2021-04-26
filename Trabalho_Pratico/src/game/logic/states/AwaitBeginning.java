@@ -2,6 +2,10 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
+import game.utils.Utils;
+
+import java.util.Random;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -14,10 +18,9 @@ public class AwaitBeginning extends StateAdapter{
     }
 
     @Override
-    public IState chooseMenu(){ return new AwaitBeginning(getGame()); }
-
-    @Override
-    public IState chooseGameMode() {
+    public IState startGame() {
+        getGame().initBoardGame();
+        getGame().flipCoin();
         return new AwaitGameMode(getGame());
     }
 

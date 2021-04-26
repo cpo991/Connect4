@@ -1,6 +1,8 @@
 package game.utils;
 
 import java.util.Scanner;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -13,6 +15,11 @@ public class Utils {
     }
 
     private Utils() {}
+
+    public static void next() {
+        System.out.println("Press \"ENTER\" to continue...");
+        sc.nextLine();
+    }
 
     /**
      * Sends a question to the user and reads the command written by him
@@ -70,4 +77,5 @@ public class Utils {
     public static int randNum(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
+
 }

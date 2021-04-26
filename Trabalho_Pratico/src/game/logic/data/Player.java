@@ -5,20 +5,28 @@ package game.logic.data;
  */
 public class Player {
     private final int number;
-    private final String name;
-    private final boolean isPerson;
+    private String name;
+    private boolean isPerson;
     private int credits;
     private int turn;
-    private Character piece;
+    private final Character piece;
+    private int specialPiece;
 
     public Player(int number, String name, boolean isPerson, Character piece){
         this.number = number;
         this.name = name;
         this.isPerson = isPerson; // 1 - yes / 0 - no
         this.credits = Constants.MAX_CREDITS;
-        this.turn = 0;
+        this.turn = 1;
         this.piece = piece;
+        this.specialPiece = 0;
     }
+
+    public void setIsPerson(Boolean isPerson){ this.isPerson = isPerson;}
+
+    public void setSpecialPiece(int specialPiece) { this.specialPiece = specialPiece; }
+
+    public void setName(String name){ this.name = name; }
 
     public String getName(){ return name;}
 
@@ -46,4 +54,6 @@ public class Player {
     public String toString() {
         return "PLayer"+ number +": "+ name + "\nCredits: " + credits + "\nPiece: " + piece + "\nTurn: " + turn;
     }
+
+    public int getSpecialPiece() { return specialPiece;}
 }

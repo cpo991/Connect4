@@ -13,8 +13,13 @@ public class AwaitGamePicker extends StateAdapter{
     }
 
     @Override
-    public IState chooseMenu() {
-        return new AwaitBeginning(getGame());
+    public IState startMathGame() {
+        return super.startMathGame();
+    }
+
+    @Override
+    public IState startWordsGame() {
+        return super.startWordsGame();
     }
 
     @Override
