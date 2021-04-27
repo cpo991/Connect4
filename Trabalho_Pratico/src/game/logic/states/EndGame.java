@@ -17,8 +17,6 @@ public class EndGame extends StateAdapter{
 
     @Override
     public IState continuePlaying() {
-        getGame().setPlayer1(new Player(1,"Player 1", false, 'Y'));
-        getGame().setPlayer2(new Player(2,"Player 2", false, 'R'));
         return new AwaitBeginning(getGame());
     }
 

@@ -17,33 +17,29 @@ public class Player {
         this.name = name;
         this.isPerson = isPerson; // 1 - yes / 0 - no
         this.credits = Constants.MAX_CREDITS;
-        this.turn = 1;
+        this.turn = 0;
         this.piece = piece;
         this.specialPiece = 0;
     }
 
-    public void setIsPerson(Boolean isPerson){ this.isPerson = isPerson;}
-
     public void setSpecialPiece(int specialPiece) { this.specialPiece = specialPiece; }
-
-    public void setName(String name){ this.name = name; }
+    public int getSpecialPiece() { return specialPiece;}
 
     public String getName(){ return name;}
+    public void setName(String name){ this.name = name; }
 
     public boolean getIsPerson(){ return isPerson;}
+    public void setIsPerson(Boolean isPerson){ this.isPerson = isPerson;}
 
     public int getCredits(){ return credits;}
-
     public void removeCredits(int num){
         this.credits = credits - num;
     }
 
     public int getTurn(){ return turn; }
-
     public void addTurn(){
         this.turn++;
     }
-
     public void resetTurn(){
         this.turn = 0;
     }
@@ -55,5 +51,5 @@ public class Player {
         return "PLayer"+ number +": "+ name + "\nCredits: " + credits + "\nPiece: " + piece + "\nTurn: " + turn;
     }
 
-    public int getSpecialPiece() { return specialPiece;}
+
 }

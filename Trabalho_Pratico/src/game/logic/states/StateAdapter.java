@@ -1,7 +1,9 @@
 package game.logic.states;
 
 import game.logic.data.GameData;
+import game.logic.data.Player;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -10,7 +12,6 @@ import java.util.logging.Logger;
  */
 public abstract class StateAdapter implements IState {
     private GameData game;
-    Logger logger = Logger.getLogger("Console");
 
     protected StateAdapter (GameData game) { this.game = game; }
 
@@ -62,6 +63,10 @@ public abstract class StateAdapter implements IState {
 
     // ------------------------------------------------------------------------------------   AwaitWordsAnswer
 
+    @Override
+    public IState insertAnswer() {
+        return this;
+    }
 
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     @Override

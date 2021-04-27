@@ -12,6 +12,7 @@ import game.utils.Utils;
  */
 public class AwaitDecision extends StateAdapter {
     GameData game = getGame();
+    Player playerC = getGame().getPlayerByNum(getGame().getWhosTurn());
     protected AwaitDecision(GameData game) {
         super(game);
     }
@@ -19,12 +20,11 @@ public class AwaitDecision extends StateAdapter {
     @Override
     public IState setPiece(int option) {
         int result;
-        int player = game.getWhosTurn();
-        if(game.getPlayerByNum(player).getIsPerson())
-            result = setPlayerPiece(game.getPlayerByNum(player),option);
+        if(playerC.getIsPerson())
+            result = setPlayerPiece(playerC,option);
         else {
             int column = Utils.randNum(1,7);
-            result = setPlayerPiece(game.getPlayerByNum(player), column);
+            result = setPlayerPiece(playerC, column);
         }
         if(result == 0) return new EndGame(game);
         return new AwaitDecision(game);
@@ -36,9 +36,9 @@ public class AwaitDecision extends StateAdapter {
         //error adding piece
         if(result == -1) return -1;
         //has won
-        if(game.fourInLine(player)) return 0;
+        if(game.hasWon(player)) return 0;
         //had piece to pieces list
-        game.setPieceToList(new Piece(game.getGamePlayNum(),
+        game.setPieceToList(new Piece(game.getGameTurn(),
                 player.getPiece(), result, column-1, 'A'));
         if(player.getIsPerson()) {
             if (player.getTurn() == 5) //didnt choosed mini game

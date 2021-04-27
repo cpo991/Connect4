@@ -31,8 +31,6 @@ public class GameData {
         this.words = new ArrayList<>();
         this.wordsTime = 0;
         this.gameType = -1;
-        this.Player1 = new Player(1,"Player 1", false, 'Y');
-        this.Player2 = new Player(2,"Player 2", false, 'R');
         this.pieces = new ArrayList<>();
         this.gameTurn = 0;
     }
@@ -43,15 +41,17 @@ public class GameData {
     public void changeWhosTurn(){ if( playerTurn == 1) this.playerTurn = 2; else this.playerTurn = 1;}
     public void flipCoin(){
         Random random = new Random();
-        this.playerTurn = random.nextInt(2)+1;}
+        this.playerTurn = random.nextInt(2)+1;
+    }
 
+    public void initPlayers(){
+        setPlayer1(new Player(1,"Player 1", false, 'Y'));
+        setPlayer2(new Player(2,"Player 2", false, 'R'));
+    }
     public void setPlayer1(Player player) { Player1 = player;}
     public void setPlayer2(Player player) { Player2 = player; }
 
-    public int getPlayer1Turn() { return Player1.getTurn(); }
-    public int getPlayer2Turn() { return Player2.getTurn(); }
-
-    public int getGamePlayNum() {return gameTurn;}
+    public int getGameTurn() {return gameTurn;}
 
     public void setPlayer1Turn() { this.Player1.addTurn();}
     public void setPlayer2Turn() { this.Player2.addTurn();}
@@ -65,33 +65,20 @@ public class GameData {
     public String getPlayer1Name() { return Player1.getName();}
     public String getPlayer2Name() { return Player2.getName();}
 
-    public Character getPlayer1Piece() { return Player1.getPiece();}
-    public Character getPlayer2Piece() { return Player2.getPiece();}
-
     public Boolean isPlayer1Person() { return Player1.getIsPerson();}
     public Boolean isPlayer2Person() { return Player2.getIsPerson();}
-
-    public void resetPlayer1Turn(){ Player1.resetTurn();}
-    public void resetPlayer2Turn(){ Player2.resetTurn();}
 
     public void setPlayer1SP(int num){ Player1.setSpecialPiece(num);}
     public void setPlayer2SP(int num){ Player2.setSpecialPiece(num);}
     
     public Player getPlayerByNum(int num){ if (num == 1) return Player1; else return Player2;}
-    
-    public int getSpecialPiece(Player player){ return player.getSpecialPiece();}
+
     
     public int getGameType(){ return gameType; }
 
     public void setGameType(int type){ this.gameType = type;}
 
     public Character[][] getBoardGame() { return boardGame; }
-
-    public Boolean fourInLine(Player player) {
-        if(isHorizontal(player) || isVertical(player) || isDiagonalNegative(player) || isDiagonalPositive(player))
-            return true;
-        return false;
-    }
 
     /**
      * Initializes the board with empty spaces
@@ -113,21 +100,6 @@ public class GameData {
         for (int L = LINE_NUM-1; L >= 0 ; L--) {
             if(boardGame[L][C-1] == ' '){
                 boardGame[L][C-1] = player.getPiece();
-                return L;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Goes to the selected column and finds the first line that doesn't have a piece
-     *
-     * @param C the column selected by the player2 to insert a piece
-     */
-    public int setPlayer2Piece(int C){
-        for (int L = LINE_NUM-1; L >= 0 ; L--) {
-            if(boardGame[L][C-1] == ' '){
-                boardGame[L][C-1] = getPlayer2Piece();
                 return L;
             }
         }
@@ -211,54 +183,60 @@ public class GameData {
      * @returns true if the player has a sequence of 4 pieces, winning the game
      */
     public boolean hasWon(Player player){ // Possibilities: |  -  /   \
-        if(isVertical(player) || isHorizontal(player) || isDiagonalPositive(player) || isDiagonalNegative(player))
-            return true;
-        return false;
+        return isVertical(player) || isHorizontal(player) || isDiagonalPositive(player) || isDiagonalNegative(player);
     }
 
-    public String sortWord() throws IOException {
+    public String sortWord() {
         int num = randNum(MIN_WORDS,MAX_WORDS);
-        File fileWords= new File("words.txt");
-        FileReader fr = new FileReader(fileWords);
-        BufferedReader br = new BufferedReader(fr);
-        String s, word = null;
-        int count=0;
-
-        while((s=br.readLine()) != null)
+        String word = null;
+        try
         {
-            if(count == num) {
-                word = s;
-                break;
+            File file = new File("src/game/utils/words.txt");
+            //File file=new File("E:\\Documentos_Carolina\\Documents_Carol\\Aulas\\4º_Ano_2º_Semestre\\[PA]Programacao_Avancada\\TP_PA\\Trabalho_Pratico\\src\\game\\utils\\words.txt");    //creates a new file instance
+            FileReader fr=new FileReader(file);   //reads the file
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream
+            StringBuilder sb=new StringBuilder();    //constructs a string buffer with no characters
+            String line;
+            int count=1;
+            while((line=br.readLine())!=null)
+            {
+                if(count == num)
+                    sb.append(line);      //appends line to string buffer
+                count++;
             }
+            fr.close();    //closes the stream and release the resources
+            System.out.println("Contents of File: ");
+            System.out.println(sb.toString());   //returns a string that textually represents the object
+            word = sb.toString();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
         }
         return word;
     }
 
-    public void addWord(String word) {
-        if(!words.contains(word))
+    public Boolean addWord(String word) {
+        if(!words.contains(word)) {
             words.add(word);
-    }
-
-    public void add5Words() throws IOException {
-        while(words.size() != 5){
-            String word = sortWord();
-            addWord(word);
+            System.out.println(word);
+            return true;
         }
-        setWords(words);
+        return false;
     }
 
-    public void setWords(List<String> words) {
-        this.words = words;
+    public void add5Words() {
+        int words = 0;
+        String newWord = null;
+        while (words != 5){
+            newWord = sortWord();
+            if(addWord(newWord))
+                words++;
+        }
     }
 
     public void setWordsTime(){
-        int count = 0;
-        for(String word : words){
-            for (int i = 0; i < word.length(); i++) {
-                count++;
-            }
-        }
-        this.wordsTime = count + 4; //white spaces
+        this.wordsTime = getWordsString().length();
     }
 
     public int getWordsTime() { return wordsTime; }
@@ -280,4 +258,10 @@ public class GameData {
         Collections.reverse(pieces);
     }
 
+    public String getWordsString(){
+        String wordsString;
+        wordsString = String.join(" ",words);
+        System.out.println(wordsString);
+        return wordsString;
+    }
 }

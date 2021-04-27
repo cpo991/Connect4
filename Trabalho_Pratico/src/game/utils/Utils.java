@@ -1,5 +1,6 @@
 package game.utils;
 
+import java.io.File;
 import java.util.Scanner;
 import java.util.logging.Logger;
 

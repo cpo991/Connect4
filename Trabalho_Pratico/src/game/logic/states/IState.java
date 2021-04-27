@@ -1,6 +1,9 @@
 package game.logic.states;
 
 import game.logic.Situation;
+
+import java.io.IOException;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -32,7 +35,7 @@ public interface IState {
     // ------------------------------------------------------------------------------------   AwaitMathAnswer
 
     // ------------------------------------------------------------------------------------   AwaitWordsAnswer
-
+    IState insertAnswer();
 
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     IState rollback(int num);

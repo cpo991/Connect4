@@ -2,9 +2,6 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
-import game.utils.Utils;
-
-import java.util.Random;
 
 /**
  *
@@ -19,14 +16,15 @@ public class AwaitBeginning extends StateAdapter{
 
     @Override
     public IState startGame() {
-        getGame().initBoardGame();
-        getGame().flipCoin();
-        return new AwaitGameMode(getGame());
+        game.initBoardGame();
+        game.initPlayers();
+        game.flipCoin();
+        return new AwaitGameMode(game);
     }
 
     @Override
     public IState chooseReplay() {
-        return new AwaitReplay(getGame());
+        return new AwaitReplay(game);
     }
 
     @Override

@@ -2,12 +2,17 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
+import game.logic.data.Player;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
  */
 public class AwaitPickingRollback extends StateAdapter{
-
+    GameData game = getGame();
+    private final Player playerC = getGame().getPlayerByNum(getGame().getWhosTurn());
+    private final Player player1 = getGame().getPlayerByNum(1);
+    private final Player player2 = getGame().getPlayerByNum(2);
 
     protected AwaitPickingRollback(GameData game) {
         super(game);
@@ -17,16 +22,10 @@ public class AwaitPickingRollback extends StateAdapter{
     @Override
     public IState rollback(int num) {
         //aplly rollback
-        if(getGame().getWhosTurn() == 1){
-            getGame().removePieces(num);
-            getGame().removePlayer1Credits(num);
-            getGame().setPlayer1SP(0);
-        }else{
-            getGame().removePieces(num);
-            getGame().removePlayer2Credits(num);
-
-        }
-        return new AwaitDecision(getGame());
+        game.removePieces(num);
+        playerC.removeCredits(num);
+        playerC.setSpecialPiece(0);
+        return new AwaitDecision(game);
     }
 
     @Override

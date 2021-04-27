@@ -2,13 +2,16 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
+import game.logic.data.Player;
 
 /**
  *
  * @author Carolina Oliveira - 2017011988
  */
 public class AwaitPickingNames extends StateAdapter{
-
+    GameData game = getGame();
+    private final Player player1 = getGame().getPlayerByNum(1);
+    private final Player player2 = getGame().getPlayerByNum(2);
 
     protected AwaitPickingNames(GameData game) {
         super(game);
@@ -16,24 +19,24 @@ public class AwaitPickingNames extends StateAdapter{
 
     @Override
     public IState pickNames(String name) {
-        if(getGame().getGameType() == 1 && (getGame().getPlayer1Name().equals("Player 1"))) { //player 1 doesn't have name
-            getGame().getPlayer1().setName(name);
-            getGame().getPlayerByNum(1).setIsPerson(true);
-            return new AwaitPickingNames(getGame());
+        if(game.getGameType() == 1 && (player1.getName().equals("Player 1"))) { //player 1 doesn't have name
+            player1.setName(name);
+            player1.setIsPerson(true);
+            return new AwaitPickingNames(game);
         }
-        if(getGame().getGameType() == 1 && !getGame().getPlayer1Name().equals("Player 1")){ // player 1 has name
-            if(getGame().getPlayer1Name().equals(name)) // player 1 name = name
+        if(game.getGameType() == 1 && !player1.getName().equals("Player 1")){ // player 1 has name
+            if(player1.getName().equals(name)) // player 1 name = name
                 return new AwaitPickingNames(getGame());
             else {
-                getGame().getPlayerByNum(2).setIsPerson(true);
-                getGame().getPlayer2().setName(name);
+                player2.setIsPerson(true);
+                player2.setName(name);
             }
         }
-        if(getGame().getGameType() == 2) {
-            getGame().getPlayer1().setName(name);
-            getGame().getPlayerByNum(1).setIsPerson(true);
+        if(game.getGameType() == 2) {
+            player1.setName(name);
+            player1.setIsPerson(true);
         }
-        return new AwaitDecision(getGame());
+        return new AwaitDecision(game);
     }
 
     @Override

@@ -12,27 +12,29 @@ import java.util.logging.Logger;
  * @author Carolina Oliveira - 2017011988
  */
 public class AwaitGameMode extends StateAdapter{
+    GameData game = getGame();
+    private final Player playerC = getGame().getPlayerByNum(getGame().getWhosTurn());
+    private final Player player1 = getGame().getPlayerByNum(1);
+    private final Player player2 = getGame().getPlayerByNum(2);
+
     protected AwaitGameMode(GameData game) { super(game); }
-
-    // criar jogador com default name
-
 
     @Override
     public IState chooseGameMode(int option) {
         getGame().setGameType(option);
         switch (option) {
             case 1, 2 -> {
-                return new AwaitPickingNames(getGame());
+                return new AwaitPickingNames(game);
             }
             case 3 -> {
-                return new AwaitDecision(getGame());
+                return new AwaitDecision(game);
             }
         }
-        return new AwaitGameMode(getGame());
+        return new AwaitGameMode(game);
     }
 
     @Override
-    public IState previousMenu() { return new AwaitBeginning(getGame()); }
+    public IState previousMenu() { return new AwaitBeginning(game); }
 
     @Override
     public Situation getCurrentSituation() {

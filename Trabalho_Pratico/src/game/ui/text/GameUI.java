@@ -2,7 +2,6 @@ package game.ui.text;
 
 import game.logic.StateMachine;
 import game.logic.data.Constants;
-import game.logic.states.AwaitWordsAnswer;
 import game.utils.Utils;
 
 import static game.utils.Utils.*;
@@ -59,9 +58,9 @@ public class GameUI {
         int option, maxOption=8;
         if(stateMachine.isCurrPlayerPerson()) {
             do {
-                System.out.println("Put piece on column: [1] [2] [3] [4] [5] [6] [7]");
+                System.out.println(" [1] [2] [3] [4] [5] [6] [7] <- Put piece on column");
                 System.out.println("8 - Rollback");
-                if (stateMachine.isMinigame()) {
+                if (stateMachine.miniGame()) {
                     System.out.println("9 - Play Mini Game");
                     maxOption = 9;
                 }
@@ -82,10 +81,11 @@ public class GameUI {
 
     private void AwaitRollbackUI() {
         System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
+        System.out.println("Game Turn: " + stateMachine.getGameTurn());
         int num = askInt("How many rollbacks?");
         if(num<=0 || num>=stateMachine.getCurrentCredits()) {
             do {
-                System.out.println("Insuficient Credtis or negative value");
+                System.out.println("Insuficient Credtis, negative value or insuficient plays to rollback");
                 System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
                 num = askInt("How many rollbacks?");
             } while (num <= 0 || num >= stateMachine.getCurrentCredits());
@@ -96,15 +96,17 @@ public class GameUI {
     private void AwaitGamePickerUI() {
         switch (choseOption("Math Game", "Words Game")) {
             case 1 -> stateMachine.startMathGame();
-            case 2 -> stateMachine.startWordsGame();
+            case 0 -> stateMachine.startWordsGame();
         }
     }
 
     private void AwaitWordsAnswerUI() {
-
+        System.out.println(stateMachine.getWords());
+        stateMachine.insertAnswer();
     }
 
     private void AwaitMathAnswerUI() {
+
 
     }
 
@@ -135,7 +137,6 @@ public class GameUI {
     }
 
     private void printData() {
-        Character [][] boardGame;
         System.out.println();
         System.out.println("Game Mode: " + getGameModeString());
         System.out.println("Now Playing: "+ getPlayerName());
@@ -143,7 +144,6 @@ public class GameUI {
     }
 
     private void printEndData() {
-        Character [][] boardGame;
         System.out.println();
         System.out.println("Game Mode: " + getGameModeString());
         CommonData();
@@ -151,16 +151,23 @@ public class GameUI {
 
     private void CommonData() {
         Character[][] boardGame;
-        System.out.println("Player 1: "+stateMachine.getPlayer1Name()+
-                "\t| Credits: "+stateMachine.getPlayer1Credits()+
-                "\t| Piece: "+stateMachine.getPlayer1Piece()+
-                "\t| Turn: "+stateMachine.getPlayer1Turn());
-        System.out.println("Player 2: "+stateMachine.getPlayer2Name()+
-                "\t| Credits: "+stateMachine.getPlayer2Credits()+
-                "\t| Piece: "+stateMachine.getPlayer2Piece() +
-                "\t| Turn: "+stateMachine.getPlayer2Turn());
+        System.out.print("Player 1: "+stateMachine.getPlayer1Name()+
+                "\t| Piece: "+stateMachine.getPlayer1Piece());
+        if(stateMachine.getGameData().isPlayer1Person()) {
+            System.out.println("\t| Credits: "+stateMachine.getPlayer1Credits()+
+                    "\t| Turn: "+stateMachine.getPlayer1Turn()+
+                    "\t| Special Pieces: " + stateMachine.getPlayer1SP());
+        }
+        System.out.print("Player 2: "+stateMachine.getPlayer2Name()+
+                "\t| Piece: "+stateMachine.getPlayer2Piece());
+        if(stateMachine.getGameData().isPlayer2Person()) {
+            System.out.println("\t| Credits: " + stateMachine.getPlayer2Credits() +
+                    "\t| Turn: " + stateMachine.getPlayer2Turn() +
+                    "\t| Special Pieces: " + stateMachine.getPlayer2SP());
+        }
         System.out.println();
         boardGame = stateMachine.getBoard();
+        System.out.println();
         for (int L = 0; L < Constants.LINE_NUM; L++) {
             System.out.print("|");
             for (int C = 0; C < Constants.COLUMN_NUM ; C++) {
