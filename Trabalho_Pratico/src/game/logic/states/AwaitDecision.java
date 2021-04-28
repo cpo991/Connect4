@@ -12,7 +12,7 @@ import game.utils.Utils;
  */
 public class AwaitDecision extends StateAdapter {
     GameData game = getGame();
-    Player playerC = getGame().getPlayerByNum(getGame().getWhosTurn());
+    Player playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
     protected AwaitDecision(GameData game) {
         super(game);
     }
@@ -45,7 +45,8 @@ public class AwaitDecision extends StateAdapter {
                 player.resetTurn();
             player.addTurn(); //increase turn
         }
-        game.changeWhosTurn(); //change player to play
+        game.setGameTurn(game.getGameTurn()+1);
+        game.changeWhoseTurn(); //change player to play
         return 1;
     }
 

@@ -60,11 +60,15 @@ public abstract class StateAdapter implements IState {
     public IState startWordsGame() { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitMathAnswer
+    @Override
+    public IState insertMathAnswer(double answer) {
+        return this;
+    }
 
     // ------------------------------------------------------------------------------------   AwaitWordsAnswer
 
     @Override
-    public IState insertAnswer() {
+    public IState insertWordsAnswer(String answer) {
         return this;
     }
 

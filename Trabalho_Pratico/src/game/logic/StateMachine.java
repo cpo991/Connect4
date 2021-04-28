@@ -1,6 +1,7 @@
 package game.logic;
 
 import game.logic.data.GameData;
+import game.logic.data.MathGame;
 import game.logic.data.Player;
 import game.logic.states.AwaitBeginning;
 import game.logic.states.IState;
@@ -18,23 +19,16 @@ public class StateMachine {
         current = new AwaitBeginning(gameData);
     }
 
-    public GameData getGameData() {
+    private GameData getGameData() {
         return gameData;
-    }
-
-    public IState getState() {
-        return current;
-    }
-
-    public void setState(IState state){
-        this.current = state;
     }
 
     public Situation getCurrentSituation(){ return current.getCurrentSituation(); }
 
-    public Player player1() { return getGameData().getPlayerByNum(1); }
-    public Player player2() { return getGameData().getPlayerByNum(2); }
-    public Player playerC() { return getGameData().getPlayerByNum(getGameData().getWhosTurn()); }
+    private Player player1() { return getGameData().getPlayerByNum(1); }
+    private Player player2() { return getGameData().getPlayerByNum(2); }
+    private Player playerC() { return getGameData().getPlayerByNum(getGameData().getWhoseTurn()); }
+    private MathGame math() {return gameData.getMathGame();}
 
     // ------------------------------------------------------------------------------------   AwaitBeginning
     public void startGame(){current = current.startGame();}
@@ -56,16 +50,15 @@ public class StateMachine {
     public int getPlayer2Credits(){ return player2().getCredits();}
     public int getPlayer1Turn() { return player1().getTurn();}
     public int getPlayer2Turn() { return player2().getTurn();}
+    public Boolean getsPlayer1Person() { return player1().getIsPerson(); }
+    public Boolean getsPlayer2Person() { return player2().getIsPerson(); }
     public Character[][] getBoard(){ return getGameData().getBoardGame();}
     public void setPiece(int option) { current = current.setPiece(option); }
     public void chooseRollback() {current = current.chooseRollback();}
     public Boolean miniGame() {
-        if(getGameData().getWhosTurn() == 1)
-            return getPlayer1Turn()==4;
-        else
-            return getPlayer2Turn()==4;
+        return (playerC().getTurn() == 4);
     }
-    public int getPlayerTurn() { return getGameData().getWhosTurn(); }
+    public int getPlayerTurn() { return getGameData().getWhoseTurn(); }
     public void startMiniGame() { current = current.startMiniGame(); }
     public Boolean isCurrPlayerPerson() { return playerC().getIsPerson(); }
     public int getPlayer1SP() { return player1().getSpecialPiece();}
@@ -77,14 +70,16 @@ public class StateMachine {
     public void startMathGame(){ current = current.startMathGame(); }
 
     // ------------------------------------------------------------------------------------   AwaitMathAnswer
+    public String getMath() { return math().getExpression();}
+    public void insertMathAnswer(double answer) { current = current.insertMathAnswer(answer);}
 
     // ------------------------------------------------------------------------------------   AwaitWordsAnswer
     public String getWords() { return getGameData().getWordsString();}
-    public void insertAnswer() {current = current.insertAnswer();}
+    public void insertWordsAnswer(String answer) {current = current.insertWordsAnswer(answer);}
 
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     public int getCurrentCredits(){
-        if(getGameData().getWhosTurn() == 1)
+        if(getGameData().getWhoseTurn() == 1)
             return getPlayer1Credits();
         else
             return getPlayer2Credits();

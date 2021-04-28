@@ -41,6 +41,21 @@ public class Utils {
      * Sends a question to the user and reads the command written by him
      *
      * @param question the question to ask to the user
+     * @returns the double that the user inserted
+     */
+    public static double askDouble(String question) {
+        System.out.print(question);
+        while (!sc.hasNextDouble())
+            sc.next();
+        double value = sc.nextDouble();
+        sc.nextLine();
+        return value;
+    }
+
+    /**
+     * Sends a question to the user and reads the command written by him
+     *
+     * @param question the question to ask to the user
      * @returns the string that the user inserted
      */
     public static String askString(String question) {

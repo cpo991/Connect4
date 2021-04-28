@@ -60,10 +60,10 @@ public class GameUI {
             do {
                 System.out.println(" [1] [2] [3] [4] [5] [6] [7] <- Put piece on column");
                 System.out.println("8 - Rollback");
-                if (stateMachine.miniGame()) {
+                //if (stateMachine.miniGame()) {
                     System.out.println("9 - Play Mini Game");
                     maxOption = 9;
-                }
+                //}
                 option = Utils.askInt("\n> ");
             } while (option < 0 || option > maxOption);
             if (option == 8) {
@@ -101,13 +101,15 @@ public class GameUI {
     }
 
     private void AwaitWordsAnswerUI() {
+        System.out.println("Write these words with the space");
         System.out.println(stateMachine.getWords());
-        stateMachine.insertAnswer();
+        stateMachine.insertWordsAnswer(askString("> "));
     }
 
     private void AwaitMathAnswerUI() {
-
-
+        System.out.println("Solve this:");
+        System.out.println(stateMachine.getMath());
+        stateMachine.insertMathAnswer(askDouble("> "));
     }
 
     private void AwaitPickingRollbackUI() {
@@ -153,14 +155,14 @@ public class GameUI {
         Character[][] boardGame;
         System.out.print("Player 1: "+stateMachine.getPlayer1Name()+
                 "\t| Piece: "+stateMachine.getPlayer1Piece());
-        if(stateMachine.getGameData().isPlayer1Person()) {
+        if(stateMachine.getsPlayer1Person()) {
             System.out.println("\t| Credits: "+stateMachine.getPlayer1Credits()+
                     "\t| Turn: "+stateMachine.getPlayer1Turn()+
                     "\t| Special Pieces: " + stateMachine.getPlayer1SP());
         }
         System.out.print("Player 2: "+stateMachine.getPlayer2Name()+
                 "\t| Piece: "+stateMachine.getPlayer2Piece());
-        if(stateMachine.getGameData().isPlayer2Person()) {
+        if(stateMachine.getsPlayer2Person()) {
             System.out.println("\t| Credits: " + stateMachine.getPlayer2Credits() +
                     "\t| Turn: " + stateMachine.getPlayer2Turn() +
                     "\t| Special Pieces: " + stateMachine.getPlayer2SP());

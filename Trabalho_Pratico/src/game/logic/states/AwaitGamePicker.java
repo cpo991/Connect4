@@ -2,7 +2,10 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
+import game.logic.data.MathGame;
 import game.logic.data.Player;
+import game.logic.data.WordGame;
+import game.utils.Utils;
 
 import java.io.IOException;
 
@@ -12,25 +15,25 @@ import java.io.IOException;
  */
 public class AwaitGamePicker extends StateAdapter{
     GameData game = getGame();
-    private final Player playerC = getGame().getPlayerByNum(getGame().getWhosTurn());
-    private final Player player1 = getGame().getPlayerByNum(1);
-    private final Player player2 = getGame().getPlayerByNum(2);
+    private final MathGame math = getGame().getMathGame();
+    private final WordGame word = getGame().getWordGame();
+
     protected AwaitGamePicker(GameData game) {
         super(game);
     }
 
     @Override
     public IState startMathGame() {
-
-
+        math.sortExpression();
+        math.setGameNum(1);
+        math.setSecond(1800);
         return new AwaitMathAnswer(game);
     }
 
     @Override
     public IState startWordsGame() {
-        game.add5Words();
-        game.setWordsTime();
-
+        word.add5Words();
+        word.setSec();
         return new AwaitWordsAnswer(game);
     }
 

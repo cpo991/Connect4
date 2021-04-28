@@ -10,7 +10,7 @@ import game.logic.data.Player;
  */
 public class AwaitPickingRollback extends StateAdapter{
     GameData game = getGame();
-    private final Player playerC = getGame().getPlayerByNum(getGame().getWhosTurn());
+    private final Player playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
     private final Player player1 = getGame().getPlayerByNum(1);
     private final Player player2 = getGame().getPlayerByNum(2);
 

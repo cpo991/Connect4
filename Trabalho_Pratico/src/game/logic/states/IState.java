@@ -33,9 +33,9 @@ public interface IState {
     IState startWordsGame();
 
     // ------------------------------------------------------------------------------------   AwaitMathAnswer
-
+    IState insertMathAnswer(double answer);
     // ------------------------------------------------------------------------------------   AwaitWordsAnswer
-    IState insertAnswer();
+    IState insertWordsAnswer(String answer);
 
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     IState rollback(int num);

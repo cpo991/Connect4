@@ -4,7 +4,6 @@ package game.logic.data;
  * @author Carolina Oliveira - 2017011988
  */
 public class Player {
-    private final int number;
     private String name;
     private boolean isPerson;
     private int credits;
@@ -12,8 +11,7 @@ public class Player {
     private final Character piece;
     private int specialPiece;
 
-    public Player(int number, String name, boolean isPerson, Character piece){
-        this.number = number;
+    public Player(String name, boolean isPerson, Character piece){
         this.name = name;
         this.isPerson = isPerson; // 1 - yes / 0 - no
         this.credits = Constants.MAX_CREDITS;
@@ -45,11 +43,4 @@ public class Player {
     }
 
     public Character getPiece(){return piece;}
-
-    @Override
-    public String toString() {
-        return "PLayer"+ number +": "+ name + "\nCredits: " + credits + "\nPiece: " + piece + "\nTurn: " + turn;
-    }
-
-
 }

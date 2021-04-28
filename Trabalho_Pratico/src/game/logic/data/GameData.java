@@ -1,7 +1,5 @@
 package game.logic.data;
 
-import game.utils.Utils;
-
 import java.io.*;
 import java.util.*;
 
@@ -15,64 +13,45 @@ import static game.utils.Utils.randNum;
 public class GameData {
     private List<Replay> replays;
     private Character [][]boardGame;
-    private Player Player1;
-    private Player Player2;
+    private Player Player1, Player2;
     private int gameType; //1,2,3
     private List<Piece> pieces;
-    private List<String> words;
-    private int wordsTime;
-    private int playerTurn;
-    private int gameTurn;
+    private int playerTurn,gameTurn;
+    private final MathGame mathGame;
+    private final WordGame wordGame;
 
 
     public GameData(){
         this.replays = new ArrayList<>();
         this.boardGame = new Character[Constants.LINE_NUM][COLUMN_NUM];
-        this.words = new ArrayList<>();
-        this.wordsTime = 0;
+        this.gameTurn = 0;
         this.gameType = -1;
         this.pieces = new ArrayList<>();
-        this.gameTurn = 0;
+        this.mathGame = new MathGame();
+        this.wordGame = new WordGame();
     }
-    public Player getPlayer1() { return Player1; }
-    public Player getPlayer2() { return Player2; }
 
-    public int getWhosTurn() { return playerTurn; }
-    public void changeWhosTurn(){ if( playerTurn == 1) this.playerTurn = 2; else this.playerTurn = 1;}
+    public WordGame getWordGame() {return wordGame;}
+    public MathGame getMathGame() { return mathGame; }
+
+    public int getWhoseTurn() { return playerTurn; }
+    public void changeWhoseTurn(){ if( playerTurn == 1) this.playerTurn = 2; else this.playerTurn = 1;}
     public void flipCoin(){
         Random random = new Random();
         this.playerTurn = random.nextInt(2)+1;
     }
 
     public void initPlayers(){
-        setPlayer1(new Player(1,"Player 1", false, 'Y'));
-        setPlayer2(new Player(2,"Player 2", false, 'R'));
+        setPlayer1(new Player("Player 1", false, 'Y'));
+        setPlayer2(new Player("Player 2", false, 'R'));
     }
     public void setPlayer1(Player player) { Player1 = player;}
     public void setPlayer2(Player player) { Player2 = player; }
 
+    public void setGameTurn(int num) {this.gameTurn = num;}
     public int getGameTurn() {return gameTurn;}
-
-    public void setPlayer1Turn() { this.Player1.addTurn();}
-    public void setPlayer2Turn() { this.Player2.addTurn();}
-
-    public int getPlayer1Credits() { return Player1.getCredits();}
-    public int getPlayer2Credits() { return Player2.getCredits();}
-
-    public void removePlayer1Credits(int num) { Player1.removeCredits(num); }
-    public void removePlayer2Credits(int num) { Player2.removeCredits(num); }
-
-    public String getPlayer1Name() { return Player1.getName();}
-    public String getPlayer2Name() { return Player2.getName();}
-
-    public Boolean isPlayer1Person() { return Player1.getIsPerson();}
-    public Boolean isPlayer2Person() { return Player2.getIsPerson();}
-
-    public void setPlayer1SP(int num){ Player1.setSpecialPiece(num);}
-    public void setPlayer2SP(int num){ Player2.setSpecialPiece(num);}
     
     public Player getPlayerByNum(int num){ if (num == 1) return Player1; else return Player2;}
-
     
     public int getGameType(){ return gameType; }
 
@@ -99,7 +78,7 @@ public class GameData {
     public int setPlayerPiece(int C, Player player){
         for (int L = LINE_NUM-1; L >= 0 ; L--) {
             if(boardGame[L][C-1] == ' '){
-                boardGame[L][C-1] = player.getPiece();
+                this.boardGame[L][C-1] = player.getPiece();
                 return L;
             }
         }
@@ -186,61 +165,6 @@ public class GameData {
         return isVertical(player) || isHorizontal(player) || isDiagonalPositive(player) || isDiagonalNegative(player);
     }
 
-    public String sortWord() {
-        int num = randNum(MIN_WORDS,MAX_WORDS);
-        String word = null;
-        try
-        {
-            File file = new File("src/game/utils/words.txt");
-            //File file=new File("E:\\Documentos_Carolina\\Documents_Carol\\Aulas\\4º_Ano_2º_Semestre\\[PA]Programacao_Avancada\\TP_PA\\Trabalho_Pratico\\src\\game\\utils\\words.txt");    //creates a new file instance
-            FileReader fr=new FileReader(file);   //reads the file
-            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream
-            StringBuilder sb=new StringBuilder();    //constructs a string buffer with no characters
-            String line;
-            int count=1;
-            while((line=br.readLine())!=null)
-            {
-                if(count == num)
-                    sb.append(line);      //appends line to string buffer
-                count++;
-            }
-            fr.close();    //closes the stream and release the resources
-            System.out.println("Contents of File: ");
-            System.out.println(sb.toString());   //returns a string that textually represents the object
-            word = sb.toString();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        return word;
-    }
-
-    public Boolean addWord(String word) {
-        if(!words.contains(word)) {
-            words.add(word);
-            System.out.println(word);
-            return true;
-        }
-        return false;
-    }
-
-    public void add5Words() {
-        int words = 0;
-        String newWord = null;
-        while (words != 5){
-            newWord = sortWord();
-            if(addWord(newWord))
-                words++;
-        }
-    }
-
-    public void setWordsTime(){
-        this.wordsTime = getWordsString().length();
-    }
-
-    public int getWordsTime() { return wordsTime; }
-
     public void setPieceToList(Piece piece){
         pieces.add(piece);
     }
@@ -258,10 +182,6 @@ public class GameData {
         Collections.reverse(pieces);
     }
 
-    public String getWordsString(){
-        String wordsString;
-        wordsString = String.join(" ",words);
-        System.out.println(wordsString);
-        return wordsString;
-    }
+    //set timer
+    //set special piece
 }

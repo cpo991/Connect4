@@ -4,16 +4,13 @@ import game.logic.Situation;
 import game.logic.data.GameData;
 import game.logic.data.Player;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Carolina Oliveira - 2017011988
  */
 public class AwaitGameMode extends StateAdapter{
     GameData game = getGame();
-    private final Player playerC = getGame().getPlayerByNum(getGame().getWhosTurn());
+    private final Player playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
     private final Player player1 = getGame().getPlayerByNum(1);
     private final Player player2 = getGame().getPlayerByNum(2);
 
