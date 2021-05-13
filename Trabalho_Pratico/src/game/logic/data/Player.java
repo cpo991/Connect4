@@ -7,7 +7,7 @@ public class Player {
     private String name;
     private boolean isPerson;
     private int credits;
-    private int turn;
+    private int turn; // turn for mini game
     private final Character piece;
     private int specialPiece;
 
@@ -17,7 +17,7 @@ public class Player {
         this.credits = Constants.MAX_CREDITS;
         this.turn = 0;
         this.piece = piece;
-        this.specialPiece = 0;
+        this.specialPiece = 5;
     }
 
     public void setSpecialPiece(int specialPiece) { this.specialPiece = specialPiece; }

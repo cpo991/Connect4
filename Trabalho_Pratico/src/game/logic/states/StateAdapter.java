@@ -1,11 +1,6 @@
 package game.logic.states;
 
 import game.logic.data.GameData;
-import game.logic.data.Player;
-
-import java.io.IOException;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -52,12 +47,19 @@ public abstract class StateAdapter implements IState {
     // ------------------------------------------------------------------------------------   AwaitDecision
     @Override
     public IState setPiece(int option) { return this; }
+
+    @Override
+    public IState chooseSpecialPiece() { return this; }
+
     // ------------------------------------------------------------------------------------   AwaitGamePicker
     @Override
     public IState startMathGame() { return this; }
 
     @Override
     public IState startWordsGame() { return this; }
+
+    @Override
+    public IState cancelMiniGame() { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitMathAnswer
     @Override
@@ -66,11 +68,17 @@ public abstract class StateAdapter implements IState {
     }
 
     // ------------------------------------------------------------------------------------   AwaitWordsAnswer
-
     @Override
     public IState insertWordsAnswer(String answer) {
         return this;
     }
+
+    // ------------------------------------------------------------------------------------   AwaitSpecialPiece
+    @Override
+    public IState setSpecialPiece(int option) { return this; }
+
+    @Override
+    public IState cancelSpecialPiece() { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     @Override
@@ -81,8 +89,11 @@ public abstract class StateAdapter implements IState {
     public IState continuePlaying() { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitPickingReplay
-
+    @Override
+    public IState startReplay(int option) { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitReplay
+    @Override
+    public IState nextStep() { return null; }
 
 }

@@ -5,10 +5,10 @@ package game.logic.data;
  */
 public class Piece {
     private final int order;
-    private final Character piece; // Y - yellow R - red S - special
+    private Character piece; // Y - yellow R - red S - special
     private final int L;
     private final int C;
-    private Character state; // A-active D-Deleted by special piece R-removed by rollback
+    private Character state; // A-active D-Deleted by special piece R-removed by rollback N - new added by rollback
 
     public Piece(int order, Character piece, int l, int c, char state) {
         this.order = order;
@@ -19,12 +19,13 @@ public class Piece {
     }
 
     public Character getPiece() { return piece; }
+    public void setPiece(Character piece) { this.piece = piece; }
 
     public int getOrder() { return order; }
 
     public int getL() { return L; }
     public int getC() { return C; }
 
-    public void setState(char s) { this.state = s; }
     public Character getState() {return state;}
+    public void setState(Character state) { this.state = state; }
 }

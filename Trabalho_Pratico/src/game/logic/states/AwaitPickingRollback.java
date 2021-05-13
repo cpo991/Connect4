@@ -3,7 +3,6 @@ package game.logic.states;
 import game.logic.Situation;
 import game.logic.data.GameData;
 import game.logic.data.Player;
-
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -11,8 +10,6 @@ import game.logic.data.Player;
 public class AwaitPickingRollback extends StateAdapter{
     GameData game = getGame();
     private final Player playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
-    private final Player player1 = getGame().getPlayerByNum(1);
-    private final Player player2 = getGame().getPlayerByNum(2);
 
     protected AwaitPickingRollback(GameData game) {
         super(game);
@@ -21,12 +18,16 @@ public class AwaitPickingRollback extends StateAdapter{
 
     @Override
     public IState rollback(int num) {
-        //aplly rollback
-        game.removePieces(num);
+
+
+        //game.removePieces(num, playerC);
         playerC.removeCredits(num);
         playerC.setSpecialPiece(0);
+        //game.setPlay(game);
+        game.setPlay(game);
         return new AwaitDecision(game);
     }
+
 
     @Override
     public Situation getCurrentSituation() {

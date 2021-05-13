@@ -1,22 +1,36 @@
 package game.logic.data;
 
 import game.utils.Utils;
-
+/**
+ *
+ * @author Carolina Oliveira - 2017011988
+ */
 public class MathGame {
     private int gameNum;
     private int num1;
     private int num2;
-    private int sec; //1800
+    private final int sec; //1800
     private double total;
     private Character operator;
+    private Boolean hasWon;
+    private long startTime;
 
     public MathGame(){
         this.gameNum = 1;
         this.num1 = this.num2 = 0;
-        this.sec = 1800;
+        this.sec = 30000;
         this.total = 0;
         this.operator = ' ';
+        this.hasWon = false;
+        this.startTime = 0;
     }
+
+    public void setStartTime(long startTime) { this.startTime = startTime; }
+    public long getStartTime() { return startTime; }
+    public int getSec() { return sec; }
+
+    public Boolean getHasWon() { return hasWon; }
+    public void setHasWon(Boolean hasWon) { hasWon = hasWon; }
 
     public void setGameNum(int gameNum) { this.gameNum = gameNum; }
     public int getGameNum() { return gameNum; }

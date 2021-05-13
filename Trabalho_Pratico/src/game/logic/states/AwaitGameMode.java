@@ -2,7 +2,6 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
-import game.logic.data.Player;
 
 /**
  *
@@ -10,15 +9,12 @@ import game.logic.data.Player;
  */
 public class AwaitGameMode extends StateAdapter{
     GameData game = getGame();
-    private final Player playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
-    private final Player player1 = getGame().getPlayerByNum(1);
-    private final Player player2 = getGame().getPlayerByNum(2);
 
     protected AwaitGameMode(GameData game) { super(game); }
 
     @Override
     public IState chooseGameMode(int option) {
-        getGame().setGameType(option);
+        game.setGameType(option);
         switch (option) {
             case 1, 2 -> {
                 return new AwaitPickingNames(game);
@@ -29,6 +25,7 @@ public class AwaitGameMode extends StateAdapter{
         }
         return new AwaitGameMode(game);
     }
+
 
     @Override
     public IState previousMenu() { return new AwaitBeginning(game); }

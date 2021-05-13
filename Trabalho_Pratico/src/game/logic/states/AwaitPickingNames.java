@@ -3,7 +3,6 @@ package game.logic.states;
 import game.logic.Situation;
 import game.logic.data.GameData;
 import game.logic.data.Player;
-
 /**
  *
  * @author Carolina Oliveira - 2017011988

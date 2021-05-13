@@ -26,8 +26,9 @@ public class GameUI {
                 case AwaitRollback -> AwaitRollbackUI();
                 case EndGame -> EndGameUI();
                 case AwaitPickingRollback -> AwaitPickingRollbackUI();
-                case AwaitMathAsnwer -> AwaitMathAnswerUI();
+                case AwaitMathAnswer -> AwaitMathAnswerUI();
                 case AwaitWordsAnswer -> AwaitWordsAnswerUI();
+                case AwaitSpecialPiece -> AwaitSpecialPieceUI();
             }
         }
     }
@@ -55,24 +56,39 @@ public class GameUI {
 
     private void AwaitDecisionUI() {
         printData();
-        int option, maxOption=8;
+        int option, maxOption;
+        Boolean mode = false;
         if(stateMachine.isCurrPlayerPerson()) {
             do {
+                maxOption = 8;
                 System.out.println(" [1] [2] [3] [4] [5] [6] [7] <- Put piece on column");
                 System.out.println("8 - Rollback");
-                //if (stateMachine.miniGame()) {
-                    System.out.println("9 - Play Mini Game");
-                    maxOption = 9;
-                //}
+                if(stateMachine.hasPlayerSpecialPiece()){
+                    System.out.println("9 - Special Piece");
+                    maxOption++;
+                    if (stateMachine.miniGame()) {
+                        System.out.println("10 - Play Mini Game");
+                        maxOption++;
+                    }
+                    mode = true;
+                }else{
+                    if (stateMachine.miniGame()) {
+                        System.out.println("9 - Play Mini Game");
+                        maxOption++;
+                        mode = false;
+                    }
+                }
                 option = Utils.askInt("\n> ");
-            } while (option < 0 || option > maxOption);
-            if (option == 8) {
-                stateMachine.chooseRollback();
+            } while ((option < 0 || option > maxOption));
+            if (option == 8) stateMachine.chooseRollback();
+            if(mode) {
+                if (option == 9) stateMachine.chooseSpecialPiece();
+                if (option == 10) stateMachine.startMiniGame();
+                else stateMachine.setPiece(option);
+            }else {
+                if (option == 9) stateMachine.startMiniGame();
+                else stateMachine.setPiece(option);
             }
-            if (option == 9) {
-                stateMachine.startMiniGame();
-            } else
-                stateMachine.setPiece(option);
         }else{
             Utils.next();
             stateMachine.setPiece(-1);
@@ -83,7 +99,7 @@ public class GameUI {
         System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
         System.out.println("Game Turn: " + stateMachine.getGameTurn());
         int num = askInt("How many rollbacks?");
-        if(num<=0 || num>=stateMachine.getCurrentCredits()) {
+        if(num<0 || num>stateMachine.getCurrentCredits()) {
             do {
                 System.out.println("Insuficient Credtis, negative value or insuficient plays to rollback");
                 System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
@@ -94,9 +110,10 @@ public class GameUI {
     }
 
     private void AwaitGamePickerUI() {
-        switch (choseOption("Math Game", "Words Game")) {
+        switch (choseOption("Math Game", "Words Game", "Cancel")) {
             case 1 -> stateMachine.startMathGame();
-            case 0 -> stateMachine.startWordsGame();
+            case 2 -> stateMachine.startWordsGame();
+            case 0 -> stateMachine.cancelMiniGame();
         }
     }
 
@@ -112,19 +129,29 @@ public class GameUI {
         stateMachine.insertMathAnswer(askDouble("> "));
     }
 
+    private void AwaitSpecialPieceUI() {
+        int option;
+        do{
+            System.out.println("Choose a column to insert the special piece:");
+            System.out.println(" [1] [2] [3] [4] [5] [6] [7]");
+            System.out.println("8 - Cancel");
+            option = Utils.askInt("\n> ");
+        }while (option<=0 || option > 8);
+        if(option == 8)
+            stateMachine.cancelSpecialPiece();
+        else
+            stateMachine.setSpecialPiece(option);
+    }
+
     private void AwaitPickingRollbackUI() {
 
     }
 
     private void EndGameUI() {
         printEndData();
-        System.out.println();
-        System.out.println("----------- WINNER -----------");
-        System.out.println();
+        System.out.println("\n----------- WINNER -----------\n");
         System.out.println("\t\t\t" + getPlayerName());
-        System.out.println();
-        System.out.println("---------- End Game ----------");
-        System.out.println();
+        System.out.println("\n---------- End Game ----------\n");
         if (choseOption("Continue", "Exit Game") == 1) {
             stateMachine.continuePlaying();
         } else {
@@ -133,6 +160,13 @@ public class GameUI {
     }
 
     private void AwaitPickingReplayUI() {
+        int option;
+        do {
+            System.out.println("\n----------- REPLAYS -----------\n");
+            System.out.println(stateMachine.getReplaysTitle());
+            option = Utils.askInt("\n> ");
+        }while (option < 0 || option > 5);
+        stateMachine.startReplay(option);
     }
 
     private void AwaitReplayUI() {

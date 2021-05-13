@@ -8,7 +8,7 @@ import game.logic.data.GameData;
  * @author Carolina Oliveira - 2017011988
  */
 public class AwaitBeginning extends StateAdapter{
-    GameData game;
+    private final GameData game;
     public AwaitBeginning(GameData game){
         super(game);
         this.game = game;
@@ -24,7 +24,7 @@ public class AwaitBeginning extends StateAdapter{
 
     @Override
     public IState chooseReplay() {
-        return new AwaitReplay(game);
+        return new AwaitPickingReplay(game);
     }
 
     @Override

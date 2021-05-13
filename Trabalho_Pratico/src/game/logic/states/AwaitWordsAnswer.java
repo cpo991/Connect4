@@ -4,7 +4,10 @@ import game.logic.Situation;
 import game.logic.data.GameData;
 import game.logic.data.Player;
 import game.logic.data.WordGame;
-
+/**
+ *
+ * @author Carolina Oliveira - 2017011988
+ */
 public class AwaitWordsAnswer extends StateAdapter{
     GameData game = getGame();
     private final WordGame word = getGame().getWordGame();
@@ -14,11 +17,23 @@ public class AwaitWordsAnswer extends StateAdapter{
 
     @Override
     public IState insertWordsAnswer(String answer) {
-        if(answer.equals(word.getWordsString()))
-            playerC.setSpecialPiece(playerC.getSpecialPiece()+1);
-        word.clearWords();
-        playerC.resetTurn();
-        return new AwaitDecision(game);
+        if(answer.equals(word.getWordsString())){
+            if(word.getStartTime()+word.getSec() >= System.currentTimeMillis()) {//won
+                playerC.setSpecialPiece(playerC.getSpecialPiece() + 1);
+                word.setHasWon(true);
+                word.clearWords();
+                playerC.resetTurn();
+                game.setPlay(game);
+                return new AwaitDecision(game);
+            } //lost
+            word.setHasWon(false);
+            word.clearWords();
+            game.changeWhoseTurn();
+            playerC.resetTurn();
+            game.setPlay(game);
+            return new AwaitDecision(game);
+        } //try again
+        return new AwaitWordsAnswer(game);
     }
 
     @Override
