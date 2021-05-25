@@ -4,15 +4,22 @@ import game.logic.Situation;
 import game.logic.data.GameData;
 import game.logic.data.MathGame;
 import game.logic.data.Player;
+import game.utils.Utils;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
  */
 public class AwaitMathAnswer extends StateAdapter{
-    GameData game = getGame();
-    private final MathGame math = getGame().getMathGame();
-    private final Player playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
-    protected AwaitMathAnswer(GameData game) { super(game); }
+    private final GameData game;
+    private final MathGame math;
+    private final Player playerC;
+    protected AwaitMathAnswer(GameData game) {
+        super(game);
+        this.game = game;
+        this.math = getGame().getMathGame();
+        this.playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
+    }
 
     @Override
     public IState insertMathAnswer(double answer) {
@@ -20,8 +27,12 @@ public class AwaitMathAnswer extends StateAdapter{
             if (math.getTotal() == answer) { //correct answer
                 math.setGameNum(math.getGameNum() + 1);
                 math.sortExpression();
+                game.addLog("AwaitMathAnswer - Correct Answer, new expression sorted");
+                Utils.launchLog("AwaitMathAnswer","Correct Answer, new expression sorted");
                 return new AwaitMathAnswer(game);
             }
+            game.addLog("AwaitMathAnswer - Wrong Answer, new expression sorted");
+            Utils.launchLog("AwaitMathAnswer","Wrong Answer, new expression sorted");
             math.sortExpression();
             return new AwaitMathAnswer(game);
         }
@@ -31,12 +42,16 @@ public class AwaitMathAnswer extends StateAdapter{
                 math.setGameNum(1);
                 playerC.resetTurn();
                 math.setHasWon(true);
+                game.addLog("AwaitMathAnswer - Game Won");
+                Utils.launchLog("AwaitMathAnswer","Game Won");
+            }else {
+                game.addLog("AwaitMathAnswer - Game Lost");
+                Utils.launchLog("AwaitMathAnswer", "Game Lost");
             }
         }
         math.setHasWon(false);
         playerC.resetTurn();
         game.changeWhoseTurn();
-        game.setPlay(game);
         return new AwaitDecision(game);
     }
 

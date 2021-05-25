@@ -2,19 +2,25 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
+import game.utils.Utils;
 
 /**
  *
  * @author Carolina Oliveira - 2017011988
  */
-public class AwaitGameMode extends StateAdapter{
-    GameData game = getGame();
+public class AwaitPickingGameMode extends StateAdapter{
+    private final GameData game;
 
-    protected AwaitGameMode(GameData game) { super(game); }
+    protected AwaitPickingGameMode(GameData game) {
+        super(game);
+        this.game = game;
+    }
 
     @Override
     public IState chooseGameMode(int option) {
         game.setGameType(option);
+        game.addLog("AwaitGamePicker - Game Mode was set to: "+game.getGameModeString());
+        Utils.launchLog("AwaitGameMode","Game Mode was set to: "+game.getGameModeString());
         switch (option) {
             case 1, 2 -> {
                 return new AwaitPickingNames(game);
@@ -23,7 +29,7 @@ public class AwaitGameMode extends StateAdapter{
                 return new AwaitDecision(game);
             }
         }
-        return new AwaitGameMode(game);
+        return new AwaitPickingGameMode(game);
     }
 
 
@@ -31,7 +37,5 @@ public class AwaitGameMode extends StateAdapter{
     public IState previousMenu() { return new AwaitBeginning(game); }
 
     @Override
-    public Situation getCurrentSituation() {
-        return Situation.AwaitGameMode;
-    }
+    public Situation getCurrentSituation() { return Situation.AwaitGameMode; }
 }

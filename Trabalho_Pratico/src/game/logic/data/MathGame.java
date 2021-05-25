@@ -1,11 +1,14 @@
 package game.logic.data;
 
 import game.utils.Utils;
+
+import java.io.Serializable;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
  */
-public class MathGame {
+public class MathGame implements Serializable {
     private int gameNum;
     private int num1;
     private int num2;
@@ -29,8 +32,7 @@ public class MathGame {
     public long getStartTime() { return startTime; }
     public int getSec() { return sec; }
 
-    public Boolean getHasWon() { return hasWon; }
-    public void setHasWon(Boolean hasWon) { hasWon = hasWon; }
+    public void setHasWon(Boolean hasWon) { this. hasWon = hasWon; }
 
     public void setGameNum(int gameNum) { this.gameNum = gameNum; }
     public int getGameNum() { return gameNum; }

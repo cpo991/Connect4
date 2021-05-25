@@ -1,6 +1,9 @@
 package game.logic.states;
 
 import game.logic.data.GameData;
+
+import java.io.File;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -24,6 +27,9 @@ public abstract class StateAdapter implements IState {
     public IState chooseReplay() {
         return this;
     }
+
+    @Override
+    public IState pickGame() { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitGameMode
     @Override
@@ -50,6 +56,9 @@ public abstract class StateAdapter implements IState {
 
     @Override
     public IState chooseSpecialPiece() { return this; }
+    @Override
+    public IState saveGame() { return this; }
+
 
     // ------------------------------------------------------------------------------------   AwaitGamePicker
     @Override
@@ -77,9 +86,6 @@ public abstract class StateAdapter implements IState {
     @Override
     public IState setSpecialPiece(int option) { return this; }
 
-    @Override
-    public IState cancelSpecialPiece() { return this; }
-
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     @Override
     public IState rollback(int num) { return this; }
@@ -87,13 +93,23 @@ public abstract class StateAdapter implements IState {
     // ------------------------------------------------------------------------------------   EndGame
     @Override
     public IState continuePlaying() { return this; }
-
+    @Override
+    public IState exit() { return this; }
     // ------------------------------------------------------------------------------------   AwaitPickingReplay
     @Override
     public IState startReplay(int option) { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitReplay
     @Override
-    public IState nextStep() { return null; }
+    public IState nextStep() { return this; }
+    @Override
+    public IState endReplay() { return this; }
+    // ------------------------------------------------------------------------------------   AwaitLoadGame
 
+    @Override
+    public IState loadGame(File filename) { return this; }
+    // ------------------------------------------------------------------------------------   AwaitSaveGameFile
+
+    @Override
+    public IState saveGameFile(String filename) { return this; }
 }

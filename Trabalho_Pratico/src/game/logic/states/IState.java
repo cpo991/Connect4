@@ -2,6 +2,7 @@ package game.logic.states;
 
 import game.logic.Situation;
 
+import java.io.File;
 import java.io.IOException;
 /**
  *
@@ -14,7 +15,7 @@ public interface IState {
     // ------------------------------------------------------------------------------------   AwaitBeginning
     IState startGame();
     IState chooseReplay();
-
+    IState pickGame();
     // ------------------------------------------------------------------------------------   AwaitGameMode
     IState chooseGameMode(int option);
     IState previousMenu();
@@ -27,6 +28,7 @@ public interface IState {
     IState chooseRollback();
     IState startMiniGame();
     IState chooseSpecialPiece();
+    IState saveGame();
 
 
     // ------------------------------------------------------------------------------------   AwaitGamePicker
@@ -41,10 +43,9 @@ public interface IState {
 
     // ------------------------------------------------------------------------------------   AwaitSpecialPiece
     IState setSpecialPiece(int option);
-    IState cancelSpecialPiece();
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     IState rollback(int num);
-
+    IState exit();
 
     // ------------------------------------------------------------------------------------   EndGame
     IState continuePlaying();
@@ -55,7 +56,11 @@ public interface IState {
 
     // ------------------------------------------------------------------------------------   AwaitReplay
     IState nextStep();
+    IState endReplay();
 
+    // ------------------------------------------------------------------------------------   AwaitPickingLoadGame
+    IState loadGame(File filename);
 
-
+    // ------------------------------------------------------------------------------------   AwaitSaveGameFile
+    IState saveGameFile(String filename);
 }

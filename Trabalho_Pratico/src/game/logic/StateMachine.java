@@ -6,9 +6,13 @@ import game.logic.memento.Memento;
 import game.logic.states.AwaitBeginning;
 import game.logic.states.IState;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
+
+import static game.logic.data.Constants.PLAYER1;
+import static game.logic.data.Constants.PLAYER2;
 
 /**
  *
@@ -31,16 +35,21 @@ public class StateMachine implements ICareTaker {
 
     public Situation getCurrentSituation(){ return current.getCurrentSituation(); }
 
+    public IState getState() {
+        return current;
+    }
+
     private Player player1() { return getGameData().getPlayerByNum(1); }
     private Player player2() { return getGameData().getPlayerByNum(2); }
     private Player playerC() { return getGameData().getPlayerByNum(getGameData().getWhoseTurn()); }
     private MathGame math() {return gameData.getMathGame();}
     private WordGame word() {return gameData.getWordGame();}
-
+    public Boolean getExit() {return gameData.getExit();}
 
     // ------------------------------------------------------------------------------------   AwaitBeginning
     public void startGame(){current = current.startGame();}
     public void chooseReplay(){current = current.chooseReplay();}
+    public void pickGame(){current = current.pickGame();}
     // ------------------------------------------------------------------------------------   AwaitGameMode
     public void chooseGameMode(int option){current = current.chooseGameMode(option);}
     public void previousMenu(){current = current.previousMenu();}
@@ -49,34 +58,26 @@ public class StateMachine implements ICareTaker {
     public void pickNames(String name){ current = current.pickNames(name); }
 
     // ------------------------------------------------------------------------------------   AwaitDecision
-    public int getGameMode() { return getGameData().getGameType();}
-    public String getPlayer1Name(){ return player1().getName();}
-    public String getPlayer2Name(){ return player2().getName();}
-    public Character getPlayer1Piece(){ return player1().getPiece();}
-    public Character getPlayer2Piece(){ return player2().getPiece();}
+    public String getStateGameString(){return getGameData().getStateGame();}
+    public String getPlayer1String(){ return PLAYER1 + player1().getPlayerInfoString();}
+    public String getPlayer2String(){ return PLAYER2 + player2().getPlayerInfoString();}
     public int getPlayer1Credits(){ return player1().getCredits();}
     public int getPlayer2Credits(){ return player2().getCredits();}
-    public int getPlayer1Turn() { return player1().getTurn();}
-    public int getPlayer2Turn() { return player2().getTurn();}
-    public Boolean getsPlayer1Person() { return player1().getIsPerson(); }
-    public Boolean getsPlayer2Person() { return player2().getIsPerson(); }
-    public Character[][] getBoard(){ return getGameData().getBoardGame();}
+    public String getBoardString(){ return getGameData().boardGameString();}
     public void setPiece(int option) {
         saveMemento();
         current = current.setPiece(option);
     }
     public void chooseRollback() { current = current.chooseRollback(); }
-    public Boolean miniGame() {
-        return /*(playerC().getTurn() == 4)*/true;
-    }
-    public int getPlayerTurn() { return getGameData().getWhoseTurn(); }
+    public Boolean miniGame() { return (playerC().getTurn() == 4); }
+    public String getPlayerTurnString(){ return playerC().getName();}
     public void startMiniGame() { current = current.startMiniGame(); }
     public Boolean isCurrPlayerPerson() { return playerC().getIsPerson(); }
-    public int getPlayer1SP() { return player1().getSpecialPiece();}
-    public int getPlayer2SP() { return player2().getSpecialPiece();}
     public int getGameTurn() { return getGameData().getGameTurn(); }
     public void chooseSpecialPiece() { current = current.chooseSpecialPiece();}
     public boolean hasPlayerSpecialPiece() { return playerC().getSpecialPiece()>0;}
+    public void saveGame() { current = current.saveGame();}
+    public String getLogString(){return getGameData().getLogString();}
 
     // ------------------------------------------------------------------------------------   AwaitGamePicker
     public void  startWordsGame() { current = current.startWordsGame(); }
@@ -92,11 +93,7 @@ public class StateMachine implements ICareTaker {
     public void insertWordsAnswer(String answer) {current = current.insertWordsAnswer(answer);}
 
     // ------------------------------------------------------------------------------------   AwaitSpecialPiece
-    public void setSpecialPiece(int option) {
-        saveMemento();
-        current = current.setSpecialPiece(option);
-    }
-    public void cancelSpecialPiece() { current = current.cancelSpecialPiece();}
+    public void setSpecialPiece(int option) { current = current.setSpecialPiece(option); }
     // ------------------------------------------------------------------------------------   AwaitPickingRollback
     public int getCurrentCredits(){
         if(getGameData().getWhoseTurn() == 1)
@@ -106,33 +103,53 @@ public class StateMachine implements ICareTaker {
     }
 
     public void rollback(int num) {
-        while (num > 0){
-            undo();
-            num--;
+        if((getGameData().getGameTurn()-num < 0) || (playerC().getCredits()<= 0) || (playerC().getCredits()<num))
+            current = current.rollback(-1);
+        if(num == 0)
+            current = current.rollback(0);
+        else {
+            int rollback = num;
+            while (rollback >= 0) {
+                undo();
+                rollback--;
+            }
+            current = current.rollback(num);
         }
-        current = current.rollback(num);
     }
 
     // ------------------------------------------------------------------------------------   EndGame
-    public void continuePlaying() { current = current.continuePlaying();}
-
+    public void continuePlaying() { current = current.continuePlaying(); }
+    public void exit(){ current = current.exit(); }
+    public Boolean isReplay(){return getGameData().getReplay();}
+    public String getReplayWinner(){return getGameData().getWinnerName();}
+    public Boolean isBoardFull(){ return getGameData().isBoardFull();}
 
     // ------------------------------------------------------------------------------------   AwaitPickingReplay
     public String getReplaysTitle(){
         List<Replay> replay = getGameData().getReplays();
-        String phrase = null;
+        StringBuilder phrase = new StringBuilder();
         int count = 1;
         for(Replay r : replay){
-            phrase = count+" - "+r.getTitle()+"\n";
+            phrase.append(count).append(" - ").append(r.getTitle()).append("\n");
+            count++;
         }
-        return phrase;
+        return phrase.toString();
     }
     public void startReplay(int option) { current = current.startReplay(option);}
 
 
     // ------------------------------------------------------------------------------------   AwaitReplay
     public void nextStep(){ current = current.nextStep();}
+    public String getReplay() {return getGameData().currentReplayState();}
 
+    // ------------------------------------------------------------------------------------   AwaitPickingLoadGame
+
+    public void loadGame(File filename) {current = current.loadGame(filename);}
+    public boolean getError() { return getGameData().getError();}
+
+    // ------------------------------------------------------------------------------------   AwaitSaveGameFile
+
+    public void saveGameFile(String filename) {current = current.saveGameFile(filename);}
     // ------------------------------------------------------------------------------------   Memento
     @Override
     public void saveMemento() {
@@ -140,7 +157,7 @@ public class StateMachine implements ICareTaker {
         try{
             stackHist.push(getGameData().getMemento());
         } catch(IOException ex) {
-            System.err.println("gravaMemento: " + ex);
+            System.err.println("saveMemento: " + ex);
             stackHist.clear();
             stackRedo.clear();
         }
@@ -152,8 +169,8 @@ public class StateMachine implements ICareTaker {
             return;
         }
         try {
-            Memento atual = getGameData().getMemento();
-            stackRedo.push(atual);
+            Memento current = getGameData().getMemento();
+            stackRedo.push(current);
             Memento anterior = stackHist.pop();
             getGameData().setMemento(anterior);
         } catch(IOException | ClassNotFoundException ex) {
@@ -169,9 +186,9 @@ public class StateMachine implements ICareTaker {
             return;
         }
         try {
-            Memento sredo = stackRedo.pop();
+            Memento sRedo = stackRedo.pop();
             stackHist.push(getGameData().getMemento());
-            getGameData().setMemento(sredo);
+            getGameData().setMemento(sRedo);
         } catch(IOException | ClassNotFoundException ex) {
             System.err.println("redo: " + ex);
             stackHist.clear();

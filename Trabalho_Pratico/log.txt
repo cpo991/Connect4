@@ -1,0 +1,5 @@
+
+AwaitBeginning - New game was initiated
+			Player 1 and Player 2 were created.
+			The player who will start playing is the Player 2
+AwaitGamePicker - Game Mode was set to: Player vs Player

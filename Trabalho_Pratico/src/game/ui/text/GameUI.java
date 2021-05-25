@@ -8,13 +8,11 @@ import static game.utils.Utils.*;
 
 public class GameUI {
     StateMachine stateMachine;
-    private boolean exit;
     
     public GameUI(StateMachine stateMachine){this.stateMachine = stateMachine;}
     
     public void run() {
-        exit = false;
-        while(!exit) {
+        while(!stateMachine.getExit()) {
             switch (stateMachine.getCurrentSituation()) {
                 case AwaitBeginning -> AwaitBeginningUI();
                 case AwaitDecision -> AwaitDecisionUI();
@@ -23,21 +21,26 @@ public class GameUI {
                 case AwaitPickingReplay -> AwaitPickingReplayUI();
                 case AwaitPickingNames -> AwaitPickingNamesUI();
                 case AwaitReplay -> AwaitReplayUI();
-                case AwaitRollback -> AwaitRollbackUI();
                 case EndGame -> EndGameUI();
                 case AwaitPickingRollback -> AwaitPickingRollbackUI();
                 case AwaitMathAnswer -> AwaitMathAnswerUI();
                 case AwaitWordsAnswer -> AwaitWordsAnswerUI();
                 case AwaitSpecialPiece -> AwaitSpecialPieceUI();
+                case AwaitPickingLoadGame -> AwaitPickingLoadGameUI();
+                case AwaitSaveGameFile -> AwaitSaveGameFile();
             }
         }
     }
 
+
+
+
     private void AwaitBeginningUI() {
-        switch (choseOption("New Game", "Game History", "Exit")) {
+        switch (choseOption("New Game", "Game History", "Load Game", "Exit")) {
             case 1 -> stateMachine.startGame();
             case 2 -> stateMachine.chooseReplay();
-            default -> exit = true;
+            case 3 -> stateMachine.pickGame();
+            default -> stateMachine.exit();
         }
     }
 
@@ -57,56 +60,50 @@ public class GameUI {
     private void AwaitDecisionUI() {
         printData();
         int option, maxOption;
-        Boolean mode = false;
+        boolean mode = false;
         if(stateMachine.isCurrPlayerPerson()) {
             do {
-                maxOption = 8;
-                System.out.println(" [1] [2] [3] [4] [5] [6] [7] <- Put piece on column");
-                System.out.println("8 - Rollback");
+                maxOption = 10;
+                System.out.println(Constants.OPTIONS_BOARD);
+                System.out.println("8 - Save Game");
+                System.out.println("9 - See log");
+                System.out.println("10 - Rollback");
                 if(stateMachine.hasPlayerSpecialPiece()){
-                    System.out.println("9 - Special Piece");
+                    System.out.println("11 - Special Piece");
                     maxOption++;
                     if (stateMachine.miniGame()) {
-                        System.out.println("10 - Play Mini Game");
+                        System.out.println("12 - Play Mini Game");
                         maxOption++;
                     }
                     mode = true;
                 }else{
                     if (stateMachine.miniGame()) {
-                        System.out.println("9 - Play Mini Game");
+                        System.out.println("11 - Play Mini Game");
                         maxOption++;
                         mode = false;
                     }
                 }
                 option = Utils.askInt("\n> ");
-            } while ((option < 0 || option > maxOption));
-            if (option == 8) stateMachine.chooseRollback();
+                if(option == 9) {
+                    System.out.println("\n----------- LOGS -----------\n");
+                    System.out.println(stateMachine.getLogString());
+                    printData();
+                }
+            } while ((option < 0 || option > maxOption || option == 9));
+            if(option == 8) stateMachine.saveGame();
+            if (option == 10) stateMachine.chooseRollback();
             if(mode) {
-                if (option == 9) stateMachine.chooseSpecialPiece();
-                if (option == 10) stateMachine.startMiniGame();
+                if (option == 11) stateMachine.chooseSpecialPiece();
+                if (option == 12) stateMachine.startMiniGame();
                 else stateMachine.setPiece(option);
             }else {
-                if (option == 9) stateMachine.startMiniGame();
+                if (option == 11) stateMachine.startMiniGame();
                 else stateMachine.setPiece(option);
             }
         }else{
             Utils.next();
             stateMachine.setPiece(-1);
         }
-    }
-
-    private void AwaitRollbackUI() {
-        System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
-        System.out.println("Game Turn: " + stateMachine.getGameTurn());
-        int num = askInt("How many rollbacks?");
-        if(num<0 || num>stateMachine.getCurrentCredits()) {
-            do {
-                System.out.println("Insuficient Credtis, negative value or insuficient plays to rollback");
-                System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
-                num = askInt("How many rollbacks?");
-            } while (num <= 0 || num >= stateMachine.getCurrentCredits());
-        }
-        stateMachine.rollback(num);
     }
 
     private void AwaitGamePickerUI() {
@@ -133,29 +130,54 @@ public class GameUI {
         int option;
         do{
             System.out.println("Choose a column to insert the special piece:");
-            System.out.println(" [1] [2] [3] [4] [5] [6] [7]");
+            System.out.println(Constants.OPTIONS_BOARD);
             System.out.println("8 - Cancel");
             option = Utils.askInt("\n> ");
         }while (option<=0 || option > 8);
         if(option == 8)
-            stateMachine.cancelSpecialPiece();
+            stateMachine.setSpecialPiece(0);
         else
             stateMachine.setSpecialPiece(option);
     }
 
     private void AwaitPickingRollbackUI() {
-
+        System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
+        System.out.println("Game Turn: " + stateMachine.getGameTurn());
+        System.out.println("0 - Cancel");
+        int num = askInt("How many rollbacks?");
+        if(num<0 || num>stateMachine.getCurrentCredits() || (stateMachine.getGameTurn()-num < 0)) {
+            do {
+                System.out.println("Insufficient Credits, negative value or insufficient plays to rollback");
+                System.out.println("Credits to rollback: " + stateMachine.getCurrentCredits());
+                System.out.println("0 - Cancel");
+                num = askInt("How many rollbacks?");
+            } while (num < 0 || num > stateMachine.getCurrentCredits()|| (stateMachine.getGameTurn()-num < 0));
+        }
+        if(num == 0)
+            stateMachine.previousMenu();
+        stateMachine.rollback(num);
     }
 
     private void EndGameUI() {
-        printEndData();
-        System.out.println("\n----------- WINNER -----------\n");
-        System.out.println("\t\t\t" + getPlayerName());
+        if(stateMachine.isReplay()){
+            System.out.println(stateMachine.getReplay());
+            System.out.println("\n----------- WINNER -----------\n");
+            System.out.println("\t\t\t" + stateMachine.getReplayWinner());
+        }else{
+            printData();
+            if(stateMachine.isBoardFull())
+            System.out.println("\n----------- DRAFT -----------\n");
+            else{
+                System.out.println("\n----------- WINNER -----------\n");
+                System.out.println("\t\t\t" + stateMachine.getPlayerTurnString());
+            }
+
+        }
         System.out.println("\n---------- End Game ----------\n");
         if (choseOption("Continue", "Exit Game") == 1) {
             stateMachine.continuePlaying();
         } else {
-            exit = true;
+            stateMachine.exit();
         }
     }
 
@@ -164,69 +186,56 @@ public class GameUI {
         do {
             System.out.println("\n----------- REPLAYS -----------\n");
             System.out.println(stateMachine.getReplaysTitle());
+            System.out.println("0 - Previous");
             option = Utils.askInt("\n> ");
         }while (option < 0 || option > 5);
-        stateMachine.startReplay(option);
+        if(option == 0)
+            stateMachine.previousMenu();
+        else
+            stateMachine.startReplay(option);
     }
 
     private void AwaitReplayUI() {
+        System.out.println(stateMachine.getReplay());
+        Utils.next();
+        stateMachine.nextStep();
     }
 
     private void printData() {
-        System.out.println();
-        System.out.println("Game Mode: " + getGameModeString());
-        System.out.println("Now Playing: "+ getPlayerName());
-        CommonData();
-    }
-
-    private void printEndData() {
-        System.out.println();
-        System.out.println("Game Mode: " + getGameModeString());
+        System.out.println(stateMachine.getStateGameString());
         CommonData();
     }
 
     private void CommonData() {
-        Character[][] boardGame;
-        System.out.print("Player 1: "+stateMachine.getPlayer1Name()+
-                "\t| Piece: "+stateMachine.getPlayer1Piece());
-        if(stateMachine.getsPlayer1Person()) {
-            System.out.println("\t| Credits: "+stateMachine.getPlayer1Credits()+
-                    "\t| Turn: "+stateMachine.getPlayer1Turn()+
-                    "\t| Special Pieces: " + stateMachine.getPlayer1SP());
-        }
-        System.out.print("Player 2: "+stateMachine.getPlayer2Name()+
-                "\t| Piece: "+stateMachine.getPlayer2Piece());
-        if(stateMachine.getsPlayer2Person()) {
-            System.out.println("\t| Credits: " + stateMachine.getPlayer2Credits() +
-                    "\t| Turn: " + stateMachine.getPlayer2Turn() +
-                    "\t| Special Pieces: " + stateMachine.getPlayer2SP());
-        }
-        System.out.println();
-        boardGame = stateMachine.getBoard();
-        System.out.println();
-        for (int L = 0; L < Constants.LINE_NUM; L++) {
-            System.out.print("|");
-            for (int C = 0; C < Constants.COLUMN_NUM ; C++) {
-                System.out.print(" "+boardGame[L][C]+" |");
-            }
-            System.out.println();
-        }
+        System.out.print(stateMachine.getPlayer1String());
+        System.out.print(stateMachine.getPlayer2String()+"\n");
+        System.out.println(stateMachine.getBoardString());
     }
 
-    private String getPlayerName(){
-        if(stateMachine.getPlayerTurn() == 1)
-            return stateMachine.getPlayer1Name();
+    private void AwaitPickingLoadGameUI() {
+        String filename;
+        if(stateMachine.getError()) {
+            System.out.println("[ERROR] File not found");
+        }
+        System.out.println("0 - Previous");
+        filename = Utils.askString("Filename: ");
+        if (filename.equals("0"))
+            stateMachine.previousMenu();
+        //else
+        //stateMachine.loadGame(filename);
+
+    }
+
+    private void AwaitSaveGameFile() {
+        String filename;
+        if(stateMachine.getError()) {
+            System.out.println("[ERROR] File name already exists or doesn't end with .dat");
+        }
+        System.out.println("0 - Previous");
+        filename = Utils.askString("Name of the file to save the current game: ");
+        if (filename.equals("0"))
+            stateMachine.previousMenu();
         else
-            return stateMachine.getPlayer2Name();
+            stateMachine.saveGameFile(filename);
     }
-
-    private String getGameModeString() {
-        return switch (stateMachine.getGameMode()) {
-            case 1 -> "Player vs Player";
-            case 2 -> "Player vs Computer";
-            case 3 -> "Computer vs Computer";
-            default -> "Not Defined";
-        };
-    }
-
 }

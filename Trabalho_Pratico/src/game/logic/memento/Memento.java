@@ -9,14 +9,14 @@ public class Memento {
     private byte[] snapshot = null;
 
     public Memento(Object obj) throws IOException {
-        ByteArrayOutputStream baos;
+        ByteArrayOutputStream bAos;
         ObjectOutputStream oos = null;
 
         try {
-            baos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(baos);
+            bAos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bAos);
             oos.writeObject(obj);
-            snapshot = baos.toByteArray();
+            snapshot = bAos.toByteArray();
         }finally {
             if(oos!=null)
                 oos.close();

@@ -1,6 +1,8 @@
 package game.utils;
 
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -92,4 +94,8 @@ public class Utils {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
+    public static void launchLog(String className, String log){
+        Logger logger = Logger.getLogger(className);
+        logger.log(Level.INFO, log);
+    }
 }

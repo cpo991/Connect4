@@ -1,9 +1,6 @@
 package game.logic.data;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +12,7 @@ import static game.utils.Utils.randNum;
  *
  * @author Carolina Oliveira - 2017011988
  */
-public class WordGame {
+public class WordGame implements Serializable {
     private List<String> words;
     private int sec;
     private Boolean hasWon;
@@ -28,15 +25,10 @@ public class WordGame {
         this.startTime = 0;
     }
 
-    public void setWords(List<String> words) {
-        this.words = words;
-    }
-
     public void setStartTime(long startTime) { this.startTime = startTime; }
     public long getStartTime() { return startTime; }
 
-    public Boolean getHasWon() { return hasWon; }
-    public void setHasWon(Boolean hasWon) { hasWon = hasWon; }
+    public void setHasWon(Boolean hasWon) { this.hasWon = hasWon; }
 
     public String sortWord() {
         int num = randNum(MIN_WORDS,MAX_WORDS);
