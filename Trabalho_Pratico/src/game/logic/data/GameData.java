@@ -328,6 +328,10 @@ public class GameData implements Serializable, IMementoOriginator {
 
     public void setReplay(Replay replay) { this.replays.add(replay);}
 
+    public String getReplaysByNum(int num){
+        return replays.get(num-1).getTitle();
+    }
+
     public void addNewReplay() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
@@ -412,10 +416,10 @@ public class GameData implements Serializable, IMementoOriginator {
         return tempFile.exists();
     }
 
-    public Boolean validFile(String filename){
-        if(!filename.endsWith(".dat"))
+    public Boolean validFile(File filename){
+        if(!filename.getName().endsWith(".dat"))
             return false;
-        File tempFile = new File(filename);
+        File tempFile = new File(filename.getName());
         return !tempFile.exists();
     }
 
@@ -431,7 +435,7 @@ public class GameData implements Serializable, IMementoOriginator {
         }
     }
 
-    public void saveGame(String filename){
+    public void saveGame(File filename){
         try{
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename));
             oos.writeObject(this);

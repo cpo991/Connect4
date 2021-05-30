@@ -13,7 +13,7 @@ public class AwaitPickingLoadGame extends StateAdapter{
         this.game = game;
     }
 
-    @Override
+    /*@Override
     public IState loadGame(File file){
         if(!game.fileExists(file.getName())){
             game.setError(true);
@@ -26,7 +26,8 @@ public class AwaitPickingLoadGame extends StateAdapter{
         game.addLog("AwaitPickingLoadGame - Game loaded");
         Utils.launchLog("AwaitPickingLoadGame","Game loaded");
         return new AwaitDecision(game);
-    }
+    }*/
+
 
     @Override
     public IState previousMenu() { return new AwaitBeginning(game); }

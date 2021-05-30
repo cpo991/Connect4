@@ -55,8 +55,8 @@ public class StateMachine implements ICareTaker {
     public void previousMenu(){current = current.previousMenu();}
 
     // ------------------------------------------------------------------------------------   AwaitPickingNames
-    public void pickNames(String name){ current = current.pickNames(name); }
-
+    public void pickNames(String name1, String name2){ current = current.pickNames(name1, name2); }
+    public int getGameMode(){return getGameData().getGameType();}
     // ------------------------------------------------------------------------------------   AwaitDecision
     public String getStateGameString(){return getGameData().getStateGame();}
     public String getPlayer1String(){ return PLAYER1 + player1().getPlayerInfoString();}
@@ -137,6 +137,7 @@ public class StateMachine implements ICareTaker {
     }
     public void startReplay(int option) { current = current.startReplay(option);}
 
+    public String getReplaysByNum(int num){ return getGameData().getReplaysByNum(num); }
 
     // ------------------------------------------------------------------------------------   AwaitReplay
     public void nextStep(){ current = current.nextStep();}
@@ -149,7 +150,7 @@ public class StateMachine implements ICareTaker {
 
     // ------------------------------------------------------------------------------------   AwaitSaveGameFile
 
-    public void saveGameFile(String filename) {current = current.saveGameFile(filename);}
+    public void saveGameFile(File filename) {current = current.saveGameFile(filename);}
     // ------------------------------------------------------------------------------------   Memento
     @Override
     public void saveMemento() {

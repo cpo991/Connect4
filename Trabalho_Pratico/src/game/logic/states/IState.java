@@ -21,7 +21,7 @@ public interface IState {
     IState previousMenu();
 
     // ------------------------------------------------------------------------------------   AwaitPickingNames
-    IState pickNames(String name);
+    IState pickNames(String name1, String name2);
 
     // ------------------------------------------------------------------------------------   AwaitDecision
     IState setPiece(int option);
@@ -62,5 +62,5 @@ public interface IState {
     IState loadGame(File filename);
 
     // ------------------------------------------------------------------------------------   AwaitSaveGameFile
-    IState saveGameFile(String filename);
+    IState saveGameFile(File filename);
 }

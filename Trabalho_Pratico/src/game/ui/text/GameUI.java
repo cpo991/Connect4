@@ -54,7 +54,7 @@ public class GameUI {
     }
 
     private void AwaitPickingNamesUI() {
-        stateMachine.pickNames(askString("Insert Name of player: "));
+        //stateMachine.pickNames(askString("Insert Name of player: "));
     }
 
     private void AwaitDecisionUI() {
@@ -235,7 +235,7 @@ public class GameUI {
         filename = Utils.askString("Name of the file to save the current game: ");
         if (filename.equals("0"))
             stateMachine.previousMenu();
-        else
-            stateMachine.saveGameFile(filename);
+        //else
+            //stateMachine.saveGameFile(filename);
     }
 }

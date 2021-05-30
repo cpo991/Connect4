@@ -4,6 +4,8 @@ import game.logic.Situation;
 import game.logic.data.GameData;
 import game.utils.Utils;
 
+import java.io.File;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -42,9 +44,11 @@ public class AwaitBeginning extends StateAdapter{
     }
 
     @Override
-    public IState pickGame() {
-        game.setError(false);
-        return new AwaitPickingLoadGame(game);
+    public IState loadGame(File file){
+        game.loadGame(file);
+        game.addLog("AwaitPickingLoadGame - Game loaded from file: " + file.getName());
+        Utils.launchLog("AwaitPickingLoadGame","Game loaded from file: " + file.getName());
+        return new AwaitDecision(game);
     }
 
     @Override

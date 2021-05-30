@@ -3,7 +3,6 @@ package game;
 import game.logic.StateMachine;
 import game.ui.gui.model.GameObserver;
 import game.ui.gui.views.PaneOrganizer;
-import game.ui.text.GameUI;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;

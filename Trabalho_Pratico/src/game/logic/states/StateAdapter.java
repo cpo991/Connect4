@@ -48,7 +48,7 @@ public abstract class StateAdapter implements IState {
 
     // ------------------------------------------------------------------------------------   AwaitPickingNames
     @Override
-    public IState pickNames(String name) { return this; }
+    public IState pickNames(String name1, String name2) { return this; }
 
     // ------------------------------------------------------------------------------------   AwaitDecision
     @Override
@@ -111,5 +111,5 @@ public abstract class StateAdapter implements IState {
     // ------------------------------------------------------------------------------------   AwaitSaveGameFile
 
     @Override
-    public IState saveGameFile(String filename) { return this; }
+    public IState saveGameFile(File filename) { return this; }
 }

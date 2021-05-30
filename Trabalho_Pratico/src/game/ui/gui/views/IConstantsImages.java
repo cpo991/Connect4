@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 public interface IConstantsImages {
 
     String GAME_ICON = "Images/fourInARow.png";
+    String PLAYER_ICON = "Images/player.png";
 
     Background menuBackground = new Background(new BackgroundFill(Color.rgb(204,205,255, 0.2), CornerRadii.EMPTY, Insets.EMPTY));
 

@@ -4,6 +4,8 @@ import game.logic.Situation;
 import game.logic.data.GameData;
 import game.utils.Utils;
 
+import java.io.File;
+
 public class AwaitSaveGameFile extends StateAdapter{
     private final GameData game;
     protected AwaitSaveGameFile(GameData game) {
@@ -12,7 +14,7 @@ public class AwaitSaveGameFile extends StateAdapter{
     }
 
     @Override
-    public IState saveGameFile(String filename) {
+    public IState saveGameFile(File filename) {
         if(!game.validFile(filename)){
             game.setError(true);
             game.addLog("AwaitSaveGameFile - Filename invalid or already exists");

@@ -1,5 +1,7 @@
 
 AwaitBeginning - New game was initiated
 			Player 1 and Player 2 were created.
-			The player who will start playing is the Player 2
+			The player who will start playing is the Player 1
 AwaitGamePicker - Game Mode was set to: Player vs Player
+AwaitPickingNames - Player 1 name was set to asd
+AwaitPickingNames - Player 2 name was set to ddd
