@@ -1,9 +1,9 @@
 package game.ui.gui.views;
 
 import game.logic.Situation;
-import game.logic.data.Player;
-import game.ui.gui.IConstantsColors;
+import game.ui.gui.IGUIConstants;
 import game.ui.gui.model.GameObserver;
+import game.ui.gui.resources.Images;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -23,12 +23,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
-import static game.ui.gui.views.IConstantsImages.PLAYER_ICON;
 
-public class GUIAwaitPickingNames extends StackPane implements PropertyChangeListener, IConstantsColors {
+public class GUIAwaitPickingNames extends StackPane implements PropertyChangeListener, IGUIConstants {
     private BorderPane bp;
     private StackPane sp;
     private GameObserver game;
@@ -109,18 +106,22 @@ public class GUIAwaitPickingNames extends StackPane implements PropertyChangeLis
         menuP1.getChildren().addAll(labelP1,inputP1);
         menuP1.setSpacing(50);
         menuP1.setAlignment(Pos.CENTER);
+
         if(game.getGameMode() == 1)
             menuP2.getChildren().addAll(labelP2,inputP2);
         else
             menuP2.getChildren().add(labelP2);
         menuP2.setSpacing(50);
         menuP2.setAlignment(Pos.CENTER);
+
         menuHP1.getChildren().addAll(ivP1,menuP1);
         menuHP1.setSpacing(50);
         menuHP1.setAlignment(Pos.CENTER);
+
         menuHP2.getChildren().addAll(ivP2,menuP2);
         menuHP2.setSpacing(50);
         menuHP2.setAlignment(Pos.CENTER);
+
         mainMenu.getChildren().addAll(mainLabel, menuHP1, menuHP2, btnStart);
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setSpacing(50);

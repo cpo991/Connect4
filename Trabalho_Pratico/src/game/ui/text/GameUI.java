@@ -71,13 +71,13 @@ public class GameUI {
                 if(stateMachine.hasPlayerSpecialPiece()){
                     System.out.println("11 - Special Piece");
                     maxOption++;
-                    if (stateMachine.miniGame()) {
+                    if (stateMachine.isMiniGame()) {
                         System.out.println("12 - Play Mini Game");
                         maxOption++;
                     }
                     mode = true;
                 }else{
-                    if (stateMachine.miniGame()) {
+                    if (stateMachine.isMiniGame()) {
                         System.out.println("11 - Play Mini Game");
                         maxOption++;
                         mode = false;

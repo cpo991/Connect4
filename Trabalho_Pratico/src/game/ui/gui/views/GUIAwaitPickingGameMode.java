@@ -1,8 +1,9 @@
 package game.ui.gui.views;
 
 import game.logic.Situation;
-import game.ui.gui.IConstantsColors;
+import game.ui.gui.IGUIConstants;
 import game.ui.gui.model.GameObserver;
+import game.ui.gui.resources.Images;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -20,7 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 
-public class GUIAwaitPickingGameMode extends StackPane implements PropertyChangeListener, IConstantsColors {
+public class GUIAwaitPickingGameMode extends StackPane implements PropertyChangeListener, IGUIConstants {
     private BorderPane bp;
     private StackPane sp;
     private GameObserver game;
@@ -76,7 +77,7 @@ public class GUIAwaitPickingGameMode extends StackPane implements PropertyChange
         label.setFont(Font.font(TEXT_FONT, 50));
         label.setTextFill(Paint.valueOf(LIGHT_GRAY));
 
-        menu.getChildren().add(images.getPlanetBound());
+        menu.getChildren().add(images.getGameLogo());
         menu.getChildren().addAll(label,btnPP, btnPC, btnCC, btnReturn);
         menu.setAlignment(Pos.CENTER);
 

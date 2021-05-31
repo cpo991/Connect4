@@ -1,8 +1,9 @@
 package game.ui.gui.views;
 
 import game.logic.Situation;
-import game.ui.gui.IConstantsColors;
+import game.ui.gui.IGUIConstants;
 import game.ui.gui.model.GameObserver;
+import game.ui.gui.resources.Images;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -11,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -22,20 +22,12 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import static game.ui.gui.views.IConstantsImages.GAME_ICON;
-
-public class GUIAwaitBeginning extends StackPane implements PropertyChangeListener, IConstantsColors {
+public class GUIAwaitBeginning extends StackPane implements PropertyChangeListener, IGUIConstants {
     private BorderPane bp;
     private StackPane sp;
     private GameObserver game;
@@ -85,7 +77,7 @@ public class GUIAwaitBeginning extends StackPane implements PropertyChangeListen
         info.getItems().addAll(about, log);
         menuBar.getMenus().addAll(file, info);
 
-        menu.getChildren().add(images.getPlanetBound());
+        menu.getChildren().add(images.getGameLogo());
         menu.getChildren().addAll(btnNewGame, btnHistory, btnLoad, btnExit);
         menu.setAlignment(Pos.CENTER);
 
@@ -151,7 +143,7 @@ public class GUIAwaitBeginning extends StackPane implements PropertyChangeListen
                     e.printStackTrace();
                 }
             }
-            });
+        });
 
         btnNewGame.setOnMousePressed(new BTNNEWGAME());
         btnHistory.setOnMousePressed(new BTNHISTORY());

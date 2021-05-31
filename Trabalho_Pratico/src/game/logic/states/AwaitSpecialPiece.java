@@ -20,15 +20,17 @@ public class AwaitSpecialPiece extends StateAdapter{
 
     @Override
     public IState setSpecialPiece(int option) {
-        if(option > 0){
-            game.setPlayerSpecialPiece(option-1);
-            playerC.setSpecialPiece(playerC.getSpecialPiece()-1);
-            game.setGameTurn(game.getGameTurn()+1);
-            playerC.addTurn();
-            game.changeWhoseTurn();
-            game.addLog("AwaitSpecialPiece - "+playerC.getName()+ "put special piece on column "+option);
-            Utils.launchLog("AwaitSpecialPiece", playerC.getName()+ "put special piece on column "+option);
-            game.addSnapShot();
+        if(option >= 1 && option <= 7){
+            if(playerC.getSpecialPiece()>0) {
+                game.setPlayerSpecialPiece(option - 1);
+                playerC.setSpecialPiece(playerC.getSpecialPiece() - 1);
+                game.setGameTurn(game.getGameTurn() + 1);
+                playerC.addTurn();
+                game.changeWhoseTurn();
+                game.addLog("AwaitSpecialPiece - " + playerC.getName() + "put special piece on column " + option);
+                Utils.launchLog("AwaitSpecialPiece", playerC.getName() + "put special piece on column " + option);
+                game.addSnapShot();
+            }
         }
         return new AwaitDecision(game);
     }

@@ -77,4 +77,20 @@ public class GameObserver extends PropertyChangeSupport {
         game.pickNames(name1, name2);
         firePropertyChange(null, false, true);
     }
+
+    // ------------------------------------------------------------------------------------   AwaitDecision
+    public String getGameModeString(){ return game.getGameModeString();}
+    public String getPlayerTurnString(){ return game.getPlayerTurnString();}
+    public String getP1Name() { return game.getP1Name();}
+    public int getP1Credits() { return game.getP1Credits();}
+    public int getP1SP() { return game.getP1SP();}
+    public int getP1Turn() { return game.getP1Turn();}
+    public String getP2Name() { return game.getP2Name();}
+    public int getP2Credits() { return game.getP2Credits();}
+    public int getP2SP() { return game.getP2SP();}
+    public int getP2Turn() { return game.getP2Turn();}
+    public boolean hasPlayerSP() { return game.hasPlayerSpecialPiece();}
+    public boolean isMiniGame() { return game.isMiniGame();}
+    public boolean hasCredits(){ return game.hasCredits();}
+
 }

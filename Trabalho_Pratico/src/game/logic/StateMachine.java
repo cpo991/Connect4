@@ -69,7 +69,7 @@ public class StateMachine implements ICareTaker {
         current = current.setPiece(option);
     }
     public void chooseRollback() { current = current.chooseRollback(); }
-    public Boolean miniGame() { return (playerC().getTurn() == 4); }
+    public Boolean isMiniGame() { return (playerC().getTurn() == 4); }
     public String getPlayerTurnString(){ return playerC().getName();}
     public void startMiniGame() { current = current.startMiniGame(); }
     public Boolean isCurrPlayerPerson() { return playerC().getIsPerson(); }
@@ -78,6 +78,16 @@ public class StateMachine implements ICareTaker {
     public boolean hasPlayerSpecialPiece() { return playerC().getSpecialPiece()>0;}
     public void saveGame() { current = current.saveGame();}
     public String getLogString(){return getGameData().getLogString();}
+    public String getGameModeString(){ return getGameData().getGameModeString();}
+    public String getP1Name() { return player1().getName();}
+    public int getP1Credits() { return player1().getCredits();}
+    public int getP1SP() { return player1().getSpecialPiece();}
+    public int getP1Turn() { return player1().getTurn();}
+    public String getP2Name() { return player2().getName();}
+    public int getP2Credits() { return player2().getCredits();}
+    public int getP2SP() { return player2().getSpecialPiece();}
+    public int getP2Turn() { return player2().getTurn();}
+    public boolean hasCredits() {return playerC().getCredits()>0;}
 
     // ------------------------------------------------------------------------------------   AwaitGamePicker
     public void  startWordsGame() { current = current.startWordsGame(); }

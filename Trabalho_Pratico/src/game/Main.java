@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 
-import static game.ui.gui.views.IConstantsImages.GAME_ICON;
+import static game.ui.gui.IGUIConstants.GAME_ICON;
 
 /**
  *

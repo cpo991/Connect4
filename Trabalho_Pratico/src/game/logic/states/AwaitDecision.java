@@ -55,13 +55,25 @@ public class AwaitDecision extends StateAdapter {
     public IState saveGame() { return new AwaitSaveGameFile(game); }
 
     @Override
-    public IState chooseSpecialPiece() { return new AwaitSpecialPiece(game); }
+    public IState chooseSpecialPiece() {
+        if(playerC.getSpecialPiece() > 0)
+            return new AwaitSpecialPiece(game);
+        return new AwaitDecision(game);
+    }
 
     @Override
-    public IState chooseRollback() { return new AwaitPickingRollback(game); }
+    public IState chooseRollback() {
+        if(playerC.getCredits()>0)
+            return new AwaitPickingRollback(game);
+        return new AwaitDecision(game);
+    }
 
     @Override
-    public IState startMiniGame() { return new AwaitPickingGame(game); }
+    public IState startMiniGame() {
+        if(playerC.getTurn() == 4)
+            return new AwaitPickingGame(game);
+        return new AwaitDecision(game);
+    }
 
     @Override
     public Situation getCurrentSituation() { return Situation.AwaitDecision; }
