@@ -88,6 +88,7 @@ public class StateMachine implements ICareTaker {
     public int getP2SP() { return player2().getSpecialPiece();}
     public int getP2Turn() { return player2().getTurn();}
     public boolean hasCredits() {return playerC().getCredits()>0;}
+    public int getPiecePosition(int L, int C) { return getGameData().pieceOnPos(L,C); }
 
     // ------------------------------------------------------------------------------------   AwaitGamePicker
     public void  startWordsGame() { current = current.startWordsGame(); }

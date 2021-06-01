@@ -1,37 +1,44 @@
 package game.ui.gui.views;
 
 import game.logic.Situation;
+import game.logic.data.Constants;
 import game.ui.gui.IGUIConstants;
 import game.ui.gui.model.GameObserver;
 import game.ui.gui.resources.CSSManager;
 import game.ui.gui.resources.Images;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.sound.sampled.Line;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class GUIAwaitDecision extends StackPane implements PropertyChangeListener, IGUIConstants {
+public class GUIAwaitDecision extends StackPane implements PropertyChangeListener, IGUIConstants, Constants {
     private GameObserver game;
     private BorderPane bp;
     private StackPane sp;
 
     private Images images;
     private Image imageP1,imageP2;
-    private ImageView logo, ivP1, ivP2;
-    private HBox screen, menuGameMode, menuPlayerTurn, menuP1H, menuP2H, menuBtnMiniGame, menuBtnSP, menuBtnUndo;
+    private ImageView logo, ivP1, ivP2, piece;
+    private HBox screen, menuGameMode, menuPlayerTurn, menuP1H, menuP2H, menuBtnMiniGame, menuBtnSP, menuBtnUndo, boardMenu;
     private VBox menuOpt, board, menuP1V, menuP2V;
 
     private MenuBar menuBar;
@@ -39,6 +46,8 @@ public class GUIAwaitDecision extends StackPane implements PropertyChangeListene
     private MenuItem about, log;
     private Menu file;
     private MenuItem itemSave;
+
+    private GridPane gridboard;
 
     private Label labelGameMode, labelPlayerTurn, labelGameTurn, labelP1Name, labelP1Credits, labelP1SP, labelP1Turn,
             labelP2Name, labelP2Credits, labelP2SP, labelP2Turn;
@@ -53,6 +62,9 @@ public class GUIAwaitDecision extends StackPane implements PropertyChangeListene
         this.images = new Images();
         this.logo = images.getGameLogo();
 
+        this.gridboard = new GridPane();
+
+        this.boardMenu = new HBox();
         this.screen = new HBox();
         this.menuOpt = new VBox();
         this.board = new VBox();
@@ -66,6 +78,8 @@ public class GUIAwaitDecision extends StackPane implements PropertyChangeListene
         this.menuBtnMiniGame = new HBox();
         this.menuBtnSP = new HBox();
         this.menuBtnUndo = new HBox();
+
+        this.piece = new ImageView();
 
         this.btnMiniGame = new Button("Play MiniGame");
         this.btnSP = new Button("Set Special Piece");
@@ -105,11 +119,56 @@ public class GUIAwaitDecision extends StackPane implements PropertyChangeListene
         menuBar.getMenus().addAll(file, info);
 
         // BOARD
+        boardMenu.setBackground(images.getBackground());
         board.setBackground(new Background(new BackgroundFill(BLACK_BACKGROUND, new CornerRadii(0), Insets.EMPTY)));
-        board.getChildren().add(images.getBoard());
+        board.getChildren().add(gridboard);
         board.setPadding(new Insets(10, 10, 10, 10));
-        board.prefWidthProperty().bind(screen.widthProperty().multiply(0.90));
+        board.prefWidthProperty().bind(screen.widthProperty().multiply(0.85));
         board.setAlignment(Pos.CENTER);
+        //gridboard.setVgap(25);
+        //gridboard.setHgap(25);
+        for(int i=0; i<COLUMN_NUM;i++){
+            for(int j = 0; j< LINE_NUM; j++){
+                /*Circle circle = new Circle();
+                circle.setCenterX(150);
+                circle.setCenterY(150);
+                circle.setRadius(50);
+                circle.setFill(Color.RED);
+                switch (game.getPiecePosition(j,i)){
+                    case 0 -> circle.setFill(Color.WHITE);
+                    case 1 -> circle.setFill(Color.YELLOW);
+                    case 2 -> circle.setFill(Color.RED);
+                }
+                gridboard.add(circle, i, j);*/
+                Pane pane = new Pane();
+                pane.setPrefSize(140, 140);
+                switch (game.getPiecePosition(j,i)){
+                    case 0 -> pane.setBackground(images.getWhite(j,i));
+                    case 1 -> pane.setBackground(images.getYellow(j,i));
+                    case 2 -> pane.setBackground(images.getRed(j,i));
+                }
+                gridboard.add(pane, i, j);
+                pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        Node source = (Node)mouseEvent.getSource() ;
+                        Integer colIndex = GridPane.getColumnIndex(source);
+                        Integer rowIndex = GridPane.getRowIndex(source);
+                        System.out.println(colIndex +"   "+rowIndex);
+                        game.setPiece(colIndex+1);
+                        try {
+                            GUIAwaitDecision guiAwaitDecision = new GUIAwaitDecision(game);
+                            getChildren().add(guiAwaitDecision);
+                            System.out.println(game.getCurrentState().getCurrentSituation());
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }
+        gridboard.setAlignment(Pos.CENTER);
+        //gridboard.getChildren().add(images.getBoard());
 
         // OPTIONS
         menuBtnUndo.getChildren().add(btnUndo);
@@ -128,7 +187,7 @@ public class GUIAwaitDecision extends StackPane implements PropertyChangeListene
             menuOpt.getChildren().add(menuBtnUndo);
         menuOpt.setSpacing(10);
         menuOpt.setPadding(new Insets(10, 10, 10, 10));
-        menuOpt.prefWidthProperty().bind(screen.widthProperty().multiply(0.10));
+        menuOpt.prefWidthProperty().bind(screen.widthProperty().multiply(0.15));
 
 
         //GAME INFO
@@ -255,6 +314,10 @@ public class GUIAwaitDecision extends StackPane implements PropertyChangeListene
         btnConfig(btnUndo);
         btnConfig(btnMiniGame);
 
+    }
+
+    void changeBackground(Region region, Color color){
+        region.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     public void btnConfig(Button btn){

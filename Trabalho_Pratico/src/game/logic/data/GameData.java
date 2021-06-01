@@ -151,6 +151,14 @@ public class GameData implements Serializable, IMementoOriginator {
         }
     }
 
+    public int pieceOnPos(int L, int C){
+        if(boardGame[L][C] == ' ')
+            return 0;
+        if(boardGame[L][C] == 'Y')
+            return 1;
+        else
+            return 2;
+    }
 
     /**
      * Goes to the selected column and finds the first line that doesn't have a piece

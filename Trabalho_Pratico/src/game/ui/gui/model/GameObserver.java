@@ -92,5 +92,9 @@ public class GameObserver extends PropertyChangeSupport {
     public boolean hasPlayerSP() { return game.hasPlayerSpecialPiece();}
     public boolean isMiniGame() { return game.isMiniGame();}
     public boolean hasCredits(){ return game.hasCredits();}
-
+    public void setPiece(int num){
+        game.setPiece(num);
+        firePropertyChange(null, false, true);
+    }
+    public int getPiecePosition(int L, int C){ return game.getPiecePosition(L,C); }
 }
