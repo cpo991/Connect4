@@ -37,7 +37,7 @@ public class GUIEndGame extends StackPane implements IGUIConstants, Constants {
     private VBox board;
     private Label labelGameMode, labelPlayerTurn, labelP1Name, labelP1Credits, labelP1SP, labelP1Turn,
             labelP2Name, labelP2Credits, labelP2SP, labelP2Turn, labelWinner, labelWinnerName;
-    private Button btnMiniGame, btnSP, btnUndo, btnNext, btnContinue, btnExit;
+    private Button btnContinue, btnExit;
 
     public GUIEndGame(GameObserver game){
         this.game = game;
@@ -63,18 +63,6 @@ public class GUIEndGame extends StackPane implements IGUIConstants, Constants {
         setButtons();
         setImages();
         loadBoard();
-
-        HBox menuBtnMiniGame = new HBox();
-        menuBtnMiniGame.getChildren().add(btnMiniGame);
-        menuBtnMiniGame.setAlignment(Pos.CENTER);
-
-        HBox menuBtnSP = new HBox();
-        menuBtnSP.getChildren().add(btnSP);
-        menuBtnSP.setAlignment(Pos.CENTER);
-
-        HBox menuBtnUndo = new HBox();
-        menuBtnUndo.getChildren().add(btnUndo);
-        menuBtnUndo.setAlignment(Pos.CENTER);
 
         //GAME INFO
         ImageView logo = imageLoader.getGameLogo();
@@ -116,8 +104,7 @@ public class GUIEndGame extends StackPane implements IGUIConstants, Constants {
 
         VBox menuOpt = new VBox();
         menuOpt.setBackground(new Background(new BackgroundFill(BLACK_BACKGROUND, new CornerRadii(0), Insets.EMPTY)));
-        menuOpt.getChildren().addAll(logo, menuGameMode, menuPlayerTurn, menuP1H, menuP2H, menuBtnSP,
-                menuBtnMiniGame, menuBtnUndo);
+        menuOpt.getChildren().addAll(logo, menuGameMode, menuPlayerTurn, menuP1H, menuP2H);
         menuOpt.setSpacing(10);
         menuOpt.setPadding(new Insets(10, 10, 10, 10));
         menuOpt.prefWidthProperty().bind(screen.widthProperty().multiply(0.3));
@@ -133,13 +120,13 @@ public class GUIEndGame extends StackPane implements IGUIConstants, Constants {
         contentEndGame.setAlignment(Pos.CENTER);
         contentEndGame.setBackground(new Background(new BackgroundFill(BLACK_BACKGROUND_END, new CornerRadii(0), Insets.EMPTY)));
         contentEndGame.getChildren().addAll(labelWinner, labelWinnerName, contentButtons );
-        contentEndGame.setPadding(new Insets(50, 300, 50, 300));
+        contentEndGame.setPadding(new Insets(50, 200, 50, 200));
         contentEndGame.maxWidth(200);
         contentEndGame.setFillWidth(false);
 
         HBox EndGame = new HBox();
         EndGame.getChildren().add(contentEndGame);
-        EndGame.setPadding(new Insets(100, 300, 100, 300));
+        EndGame.setPadding(new Insets(100, 200, 100, 200));
         EndGame.setAlignment(Pos.CENTER);
         EndGame.prefWidthProperty().bind(screen.widthProperty().multiply(0.7));
 
@@ -258,18 +245,25 @@ public class GUIEndGame extends StackPane implements IGUIConstants, Constants {
             }
         }
     }
-
+    private void refreshBoardReplay() {
+        for(int i=0; i<COLUMN_NUM;i++){
+            for(int j = 0; j< LINE_NUM; j++){
+                Pane pane = new Pane();
+                pane.setMaxHeight(140);
+                pane.setMaxWidth(140);
+                pane.setPrefSize(130, 130);
+                switch (game.getReplayPiecePosition(j,i)){
+                    case 0 -> pane.setBackground(imageLoader.getWhite(j,i));
+                    case 1 -> pane.setBackground(imageLoader.getYellow(j,i));
+                    case 2 -> pane.setBackground(imageLoader.getRed(j,i));
+                }
+                gridBoard.add(pane, i, j);
+            }
+        }
+    }
     private void setButtons() {
-        this.btnNext = new Button ("Next");
-        this.btnUndo = new Button("Undo");
-        this.btnMiniGame = new Button("Play MiniGame");
-        this.btnSP = new Button("Set Special Piece");
         this.btnContinue = new Button ("Continue Playing");
         this.btnExit = new Button("Exit Game");
-        btnConfig(btnSP);
-        btnConfig(btnUndo);
-        btnConfig(btnMiniGame);
-        btnConfig(btnNext);
         btnConfig(btnContinue);
         btnConfig(btnExit);
     }
@@ -286,49 +280,67 @@ public class GUIEndGame extends StackPane implements IGUIConstants, Constants {
             refresh();
         });
 
-        btnContinue.setOnAction((ActionEvent e) -> {
-            game.continuePlaying();
-        });
+        btnContinue.setOnAction((ActionEvent e) -> { game.continuePlaying(); });
+
         btnExit.setOnAction((ActionEvent e) -> {
             game.exit();
             Stage window = (Stage) this.getScene().getWindow();
             fireEvent( new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
         });
 
-        btnMiniGame.setOnAction((ActionEvent e) -> { game.startMiniGame(); });
     }
 
     private void refresh() {
         if(game.getCurrentSituation() ==  Situation.EndGame ){
-            refreshBoard();
-            labelP1Credits.setVisible(game.getGameMode() != 3);
-            labelP1SP.setVisible(game.getGameMode() != 3);
-            labelP1Turn.setVisible(game.getGameMode() != 3);
-            labelP2Credits.setVisible(game.getGameMode() == 1);
-            labelP2SP.setVisible(game.getGameMode() == 1);
-            labelP2Turn.setVisible(game.getGameMode() == 1);
-            btnSP.setVisible(game.hasPlayerSP());
-            btnMiniGame.setVisible(game.isMiniGame());
-            btnUndo.setVisible(game.hasCredits());
-            labelGameMode.setText(game.getGameModeString());
-            labelPlayerTurn.setText(game.getPlayerTurnString() + "'s Turn");
-            labelP1Name.setText(game.getP1Name());
-            labelP1Credits.setText("Credits: "+ game.getP1Credits());
-            labelP1SP.setText("Special Pieces: "+ game.getP1SP());
-            labelP1Turn.setText("Turn to MiniGame: "+ (4-game.getP1Turn()));
-            labelP2Name.setText(game.getP2Name());
-            labelP2Credits.setText("Credits: "+ game.getP2Credits());
-            labelP2SP.setText("Special Pieces: "+ game.getP2SP());
-            labelP2Turn.setText("Turn to MiniGame: "+ (4-game.getP2Turn()));
-            if(game.isBoardFull()) {
-                labelWinner.setText("Draft");
-                labelWinnerName.setText("No one won");
-            }else{
+            if(game.isReplay()){
+                refreshBoardReplay();
+                labelP1Credits.setVisible(game.getReplayGameMode() != 3);
+                labelP1SP.setVisible(game.getReplayGameMode() != 3);
+                labelP1Turn.setVisible(game.getReplayGameMode() != 3);
+                labelP2Credits.setVisible(game.getReplayGameMode() == 1);
+                labelP2SP.setVisible(game.getReplayGameMode() == 1);
+                labelP2Turn.setVisible(game.getReplayGameMode() == 1);
+                labelGameMode.setText(game.getReplayGameModeString());
+                labelPlayerTurn.setText(game.getReplayWhosPlaying() + "'s Turn");
+                labelP1Name.setText(game.getReplayPlayer1Name());
+                labelP1Credits.setText("Credits: "+ game.getReplayPlayer1Credits());
+                labelP1SP.setText("Special Pieces: "+ game.getReplayPlayer1SP());
+                labelP1Turn.setText("Turn to MiniGame: "+ (4-game.getReplayPlayer1Turn()));
+                labelP2Name.setText(game.getReplayPlayer2Name());
+                labelP2Credits.setText("Credits: "+ game.getReplayPlayer2Credits());
+                labelP2SP.setText("Special Pieces: "+ game.getReplayPlayer2SP());
+                labelP2Turn.setText("Turn to MiniGame: "+ (4-game.getReplayPlayer2Turn()));
                 labelWinner.setText("Winner!!");
-                labelWinnerName.setText(game.getPlayerTurnString());
+                labelWinnerName.setText(game.getReplayWhosPlaying());
+            }else{
+                refreshBoard();
+                labelP1Credits.setVisible(game.getGameMode() != 3);
+                labelP1SP.setVisible(game.getGameMode() != 3);
+                labelP1Turn.setVisible(game.getGameMode() != 3);
+                labelP2Credits.setVisible(game.getGameMode() == 1);
+                labelP2SP.setVisible(game.getGameMode() == 1);
+                labelP2Turn.setVisible(game.getGameMode() == 1);
+                labelGameMode.setText(game.getGameModeString());
+                labelPlayerTurn.setText(game.getPlayerTurnString() + "'s Turn");
+                labelP1Name.setText(game.getP1Name());
+                labelP1Credits.setText("Credits: "+ game.getP1Credits());
+                labelP1SP.setText("Special Pieces: "+ game.getP1SP());
+                labelP1Turn.setText("Turn to MiniGame: "+ (4-game.getP1Turn()));
+                labelP2Name.setText(game.getP2Name());
+                labelP2Credits.setText("Credits: "+ game.getP2Credits());
+                labelP2SP.setText("Special Pieces: "+ game.getP2SP());
+                labelP2Turn.setText("Turn to MiniGame: "+ (4-game.getP2Turn()));
+                if(game.isBoardFull()) {
+                    labelWinner.setText("Draft");
+                    labelWinnerName.setText("No one won");
+                }else{
+                    labelWinner.setText("Winner!!");
+                    labelWinnerName.setText(game.getPlayerTurnString());
+                }
             }
             this.setVisible(true);
-        }else{
+        }
+        else{
             this.setVisible(false);
         }
     }

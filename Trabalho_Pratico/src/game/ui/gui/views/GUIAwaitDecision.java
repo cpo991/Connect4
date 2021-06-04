@@ -75,6 +75,10 @@ public class GUIAwaitDecision extends StackPane implements IGUIConstants, Consta
         menuBtnUndo.getChildren().add(btnUndo);
         menuBtnUndo.setAlignment(Pos.CENTER);
 
+        HBox menuBtnNext = new HBox();
+        menuBtnNext.getChildren().add(btnNext);
+        menuBtnNext.setAlignment(Pos.CENTER);
+
         //GAME INFO
         ImageView logo = imageLoader.getGameLogo();
         logo.setFitHeight(120);
@@ -116,7 +120,7 @@ public class GUIAwaitDecision extends StackPane implements IGUIConstants, Consta
         VBox menuOpt = new VBox();
         menuOpt.setBackground(new Background(new BackgroundFill(BLACK_BACKGROUND, new CornerRadii(0), Insets.EMPTY)));
         menuOpt.getChildren().addAll(logo, menuGameMode, menuPlayerTurn, menuP1H, menuP2H, menuBtnSP,
-                menuBtnMiniGame, menuBtnUndo);
+                menuBtnMiniGame, menuBtnUndo, menuBtnNext);
         menuOpt.setSpacing(10);
         menuOpt.setPadding(new Insets(10, 10, 10, 10));
         menuOpt.prefWidthProperty().bind(screen.widthProperty().multiply(0.3));
@@ -215,13 +219,15 @@ public class GUIAwaitDecision extends StackPane implements IGUIConstants, Consta
                     case 2 -> pane.setBackground(imageLoader.getRed(j,i));
                 }
                 gridBoard.add(pane, i, j);
-                pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        Node source = (Node)mouseEvent.getSource() ;
-                        game.setPiece(GridPane.getColumnIndex(source)+1);
-                    }
-                });
+                if(game.isCurrPlayerPerson()) {
+                    pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            Node source = (Node) mouseEvent.getSource();
+                            game.setPiece(GridPane.getColumnIndex(source) + 1);
+                        }
+                    });
+                }
             }
         }
     }
@@ -269,6 +275,8 @@ public class GUIAwaitDecision extends StackPane implements IGUIConstants, Consta
         });
 
         btnMiniGame.setOnAction((ActionEvent e) -> { game.startMiniGame(); });
+
+        btnNext.setOnAction((ActionEvent e) -> { game.setPiece(-1); });
     }
 
     private void refresh() {
@@ -280,9 +288,17 @@ public class GUIAwaitDecision extends StackPane implements IGUIConstants, Consta
             labelP2Credits.setVisible(game.getGameMode() == 1);
             labelP2SP.setVisible(game.getGameMode() == 1);
             labelP2Turn.setVisible(game.getGameMode() == 1);
-            btnSP.setVisible(game.hasPlayerSP());
-            btnMiniGame.setVisible(game.isMiniGame());
-            btnUndo.setVisible(game.hasCredits());
+            if(game.isCurrPlayerPerson()){
+                btnSP.setVisible(game.hasPlayerSP());
+                btnMiniGame.setVisible(game.isMiniGame());
+                btnUndo.setVisible(game.hasCredits());
+                btnNext.setVisible(false);
+            }else {
+                btnSP.setVisible(false);
+                btnMiniGame.setVisible(false);
+                btnUndo.setVisible(false);
+                btnNext.setVisible(true);
+            }
             labelGameMode.setText(game.getGameModeString());
             labelPlayerTurn.setText(game.getPlayerTurnString() + "'s Turn");
             labelP1Name.setText(game.getP1Name());

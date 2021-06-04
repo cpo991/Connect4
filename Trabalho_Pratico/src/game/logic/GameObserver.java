@@ -114,6 +114,7 @@ public class GameObserver{
     public int getCurrentCredits(){return game.getCurrentCredits();}
     public int getGameTurn(){return game.getGameTurn();}
     public int getMiniGameTurn() {return game.getMiniGameTurn();}
+    public boolean isCurrPlayerPerson(){return game.isCurrPlayerPerson();}
     // ------------------------------------------------------------------------------------   AwaitMathAnswer
     public void insertMathAnswer(double answer) {
         game.insertMathAnswer(answer);
@@ -164,6 +165,8 @@ public class GameObserver{
     public String getReplayWhosPlaying(){ return game.getReplayWhosPlaying();}
 
     public int getReplayPiecePosition(int L, int C) { return game.getReplayPiecePosition(L,C); }
+
+    public boolean isReplay(){return game.isReplay();}
     // ------------------------------------------------------------------------------------   AwaitReplay
     public void nextStep(){
         game.nextStep();
