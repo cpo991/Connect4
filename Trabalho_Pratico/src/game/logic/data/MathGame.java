@@ -3,6 +3,9 @@ package game.logic.data;
 import game.utils.Utils;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+
+import static java.lang.Math.round;
 
 /**
  *
@@ -47,7 +50,7 @@ public class MathGame implements Serializable {
     public int getSecond() { return num2; }
     public void setSecond(int second) { this.num2 = second; }
 
-    public void setTotal(double total) { this.total = total; }
+    public void setTotal(double total) { this.total = round(total,2); }
     public double getTotal(){ return total; }
 
     public void setOperator(Character operator) { this.operator = operator; }
@@ -56,7 +59,7 @@ public class MathGame implements Serializable {
     public void sortExpression(){
         setFirst(sortValues());
         setSecond(sortValues());
-
+        DecimalFormat df = new DecimalFormat("#.##");
         switch (Utils.randNum(1, 4)) {
             case 1 -> {
                 setOperator('+');
@@ -77,7 +80,16 @@ public class MathGame implements Serializable {
         }
     }
 
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
     public String getExpression() {
-        return num1 + " "+getOperator().toString()+" " + num2 + " = " + total;
+        return num1 + " "+getOperator().toString()+" " + num2;
     }
 }

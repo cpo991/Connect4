@@ -9,7 +9,7 @@ import game.utils.Utils;
  * @author Carolina Oliveira - 2017011988
  */
 public class EndGame extends StateAdapter{
-    private final GameData game;
+    private GameData game;
 
     protected EndGame(GameData game) {
         super(game);
@@ -30,7 +30,7 @@ public class EndGame extends StateAdapter{
             game.addLog("EndGame - Replay Ended");
             Utils.launchLog("EndGame","Replay Ended");
         }
-        return new EndGame(game);
+        return this;
     }
 
     @Override
@@ -46,6 +46,7 @@ public class EndGame extends StateAdapter{
             game.addLog("EndGame - Replay Ended");
             Utils.launchLog("EndGame", "Replay Ended");
         }
+        game.resetGame();
         return new AwaitBeginning(game);
     }
 

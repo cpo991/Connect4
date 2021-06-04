@@ -22,7 +22,7 @@ public class AwaitPickingReplay extends StateAdapter{
         game.setReplay(true);
         game.addLog("AwaitPickingReplay - Replay " + option +" chosen");
         Utils.launchLog("AwaitPickingReplay", "Replay " + option +" chosen");
-        return new AwaitReplay(getGame());
+        return new AwaitReplay(game);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class AwaitPickingGameMode extends StateAdapter{
                 return new AwaitDecision(game);
             }
         }
-        return new AwaitPickingGameMode(game);
+        return this;
     }
 
 
@@ -37,5 +37,5 @@ public class AwaitPickingGameMode extends StateAdapter{
     public IState previousMenu() { return new AwaitBeginning(game); }
 
     @Override
-    public Situation getCurrentSituation() { return Situation.AwaitGameMode; }
+    public Situation getCurrentSituation() { return Situation.AwaitPickingGameMode; }
 }

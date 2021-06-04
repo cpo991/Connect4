@@ -20,15 +20,15 @@ public class AwaitPickingRollback extends StateAdapter{
     }
 
 
-    @Override
+   /* @Override
     public IState rollback(int num) {
         if(num == -1) {
             game.addLog("AwaitPickingRollback - [ERROR] Insufficient credits or game turn to small");
             Utils.launchLog("AwaitPickingRollback","[ERROR] Insufficient credits or game turn to small");
-            return new AwaitPickingRollback(game);
+            return this;
         }
         if(num == 0) {
-
+            return new AwaitDecision(game);
         }
         else {
             int rollback = num;
@@ -43,7 +43,7 @@ public class AwaitPickingRollback extends StateAdapter{
             game.addSnapShot();
         }
         return new AwaitDecision(game);
-    }
+    }*/
 
     @Override
     public Situation getCurrentSituation() { return Situation.AwaitPickingRollback; }

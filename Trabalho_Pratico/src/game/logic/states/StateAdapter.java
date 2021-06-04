@@ -1,8 +1,10 @@
 package game.logic.states;
 
 import game.logic.data.GameData;
+import game.logic.memento.Memento;
 
 import java.io.File;
+import java.util.Stack;
 
 /**
  *
@@ -111,5 +113,7 @@ public abstract class StateAdapter implements IState {
     // ------------------------------------------------------------------------------------   AwaitSaveGameFile
 
     @Override
-    public IState saveGameFile(File filename) { return this; }
+    public IState saveGameFile(File filename, Stack<Memento> stackHist, Stack<Memento> stackRedo) {
+        return this;
+    }
 }

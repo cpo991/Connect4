@@ -2,8 +2,14 @@ package game.logic.states;
 
 import game.logic.Situation;
 import game.logic.data.GameData;
+import game.logic.data.MathGame;
 import game.logic.data.Player;
+import game.logic.data.WordGame;
+import game.logic.memento.Memento;
 import game.utils.Utils;
+
+import java.io.File;
+import java.util.Stack;
 
 /**
  *
@@ -12,10 +18,14 @@ import game.utils.Utils;
 public class AwaitDecision extends StateAdapter {
     private final GameData game;
     private final Player playerC;
+    private final WordGame word;
+    private final MathGame math;
     protected AwaitDecision(GameData game) {
         super(game);
         this.game = game;
         this.playerC = getGame().getPlayerByNum(getGame().getWhoseTurn());
+        this.word = getGame().getWordGame();
+        this.math = getGame().getMathGame();
     }
 
     @Override
@@ -29,7 +39,7 @@ public class AwaitDecision extends StateAdapter {
             if (!game.setPlayerPiece(playerC, option)) {
                 game.addLog("AwaitDecision - Error adding piece on column "+option);
                 Utils.launchLog("AwaitDecision","Error adding piece on column "+option);
-                return new AwaitDecision(game);
+                return this;
             }
         }
         else {
@@ -52,27 +62,72 @@ public class AwaitDecision extends StateAdapter {
     }
 
     @Override
-    public IState saveGame() { return new AwaitSaveGameFile(game); }
+    public IState saveGameFile(File filename, Stack<Memento> stackHist, Stack<Memento> stackRedo) {
+        if(!game.validFile(filename)){
+            game.setError(true);
+            game.addLog("AwaitSaveGameFile - Filename invalid or already exists");
+            Utils.launchLog("AwaitSaveGameFile","Filename invalid or already exists");
+            return this;
+        }
+        game.setError(false);
+        game.saveGame(filename, stackHist, stackRedo);
+        game.addLog("AwaitSaveGameFile - Game Saved");
+        Utils.launchLog("AwaitSaveGameFile","Game Saved");
+        return new AwaitBeginning(game);
+    }
 
     @Override
     public IState chooseSpecialPiece() {
         if(playerC.getSpecialPiece() > 0)
             return new AwaitSpecialPiece(game);
-        return new AwaitDecision(game);
+        return this;
     }
 
     @Override
-    public IState chooseRollback() {
-        if(playerC.getCredits()>0)
-            return new AwaitPickingRollback(game);
+    public IState rollback(int num) {
+        if(num == -1) {
+            game.addLog("AwaitPickingRollback - [ERROR] Insufficient credits or game turn to small");
+            Utils.launchLog("AwaitPickingRollback","[ERROR] Insufficient credits or game turn to small");
+            return this;
+        }
+        if(num == 0) {
+            return new AwaitDecision(game);
+        }
+        else {
+            int rollback = num;
+            game.setRollbackMade(num);
+            while (rollback >= 0) {
+                game.setPlayerRollBackSP(playerC.getSpecialPiece());
+                game.setPlayerRollBack(game.getWhoseTurn());
+                rollback--;
+            }
+            game.addLog("AwaitPickingRollback - "+num+" rollbacks applied");
+            Utils.launchLog("AwaitPickingRollback",num+" rollbacks applied");
+            game.addSnapShot();
+        }
         return new AwaitDecision(game);
     }
 
     @Override
     public IState startMiniGame() {
-        if(playerC.getTurn() == 4)
-            return new AwaitPickingGame(game);
-        return new AwaitDecision(game);
+
+        if(playerC.getTurn() == 4) {
+            if (game.getMiniGameTurn() == 1) {
+                game.startMathGame();
+                game.addLog("AwaitDecision - Math mini game will start");
+                Utils.launchLog("AwaitDecision", "Math mini game will start");
+                game.addLog("AwaitMiniGameAnswer - " + math.getExpression()+ " = " + math.getTotal());
+                Utils.launchLog("AwaitMiniGameAnswer", math.getExpression()+ " = " + math.getTotal());
+            } else {
+                game.startWordsGame();
+                game.addLog("AwaitDecision - Words mini game will start");
+                Utils.launchLog("AwaitDecision", "Words mini game will start");
+                game.addLog("AwaitMiniGameAnswer - " + word.getWordsString());
+                Utils.launchLog("AwaitMiniGameAnswer",  word.getWordsString());
+            }
+            return new AwaitMiniGameAnswer(game);
+        }
+        return this;
     }
 
     @Override

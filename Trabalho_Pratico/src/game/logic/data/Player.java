@@ -23,7 +23,7 @@ public class Player implements Serializable {
         this.credits = Constants.MAX_CREDITS;
         this.turn = 0;
         this.piece = piece;
-        this.specialPiece = 0;
+        this.specialPiece = 5;
         this.numRollBack = 0;
     }
 

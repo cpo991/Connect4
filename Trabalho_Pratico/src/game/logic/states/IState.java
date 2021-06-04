@@ -1,9 +1,12 @@
 package game.logic.states;
 
 import game.logic.Situation;
+import game.logic.memento.Memento;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Stack;
+
 /**
  *
  * @author Carolina Oliveira - 2017011988
@@ -62,5 +65,6 @@ public interface IState {
     IState loadGame(File filename);
 
     // ------------------------------------------------------------------------------------   AwaitSaveGameFile
-    IState saveGameFile(File filename);
+
+    IState saveGameFile(File filename, Stack<Memento> stackHist, Stack<Memento> stackRedo);
 }

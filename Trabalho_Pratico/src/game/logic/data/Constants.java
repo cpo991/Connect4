@@ -27,5 +27,12 @@ public interface Constants {
     String GAME_TYPE3 = "Computer vs Computer";
 
     String OPTIONS_BOARD = " [1] [2] [3] [4] [5] [6] [7] <- Put piece on column";
+
+    String AWAITBEGINNING_HTP = "Select one of the options";
+    String AWAITDECISION_HTP = "Select one of the options";
+    String AWAITPICKINGGAMEMODE_HTP = "Select one of the options";
+    String AWAITPICKINGNAMESHTP = "Select one of the options";
+    String AWAITPICKINGREPLAY_HTP = "Select one of the options";
+    String AWAITSPECIALPIECE_HTP = "Select one of the options";
 }
 

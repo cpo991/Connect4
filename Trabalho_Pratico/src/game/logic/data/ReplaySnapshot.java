@@ -55,4 +55,12 @@ public class ReplaySnapshot implements Serializable {
             return Player2.getName();
     }
 
+    public int getReplaypieceOnPos(int L, int C) {
+        if(boardGame[L][C] == ' ')
+            return 0;
+        if(boardGame[L][C] == 'Y')
+            return 1;
+        else
+            return 2;
+    }
 }

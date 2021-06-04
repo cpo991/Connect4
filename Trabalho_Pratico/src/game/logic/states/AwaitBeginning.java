@@ -27,9 +27,8 @@ public class AwaitBeginning extends StateAdapter{
 
     @Override
     public IState startGame() {
-        game.getFileHistory();
-        game.newGame();
         game.flipCoin();
+        game.flipCoinMiniGame();
         game.addLog("AwaitBeginning - New game was initiated\n\t\t\tPlayer 1 and Player 2 were created.\n" +
                 "\t\t\tThe player who will start playing is the Player "+game.getWhoseTurn());
         Utils.launchLog("AwaitBeginning","New game was initiated\nPlayer 1 and Player 2 were created" +
@@ -39,7 +38,6 @@ public class AwaitBeginning extends StateAdapter{
 
     @Override
     public IState chooseReplay() {
-        game.getFileHistory();
         return new AwaitPickingReplay(game);
     }
 

@@ -1,5 +1,6 @@
 package game.logic.data;
 
+import game.logic.Situation;
 import game.logic.memento.IMementoOriginator;
 import game.logic.memento.Memento;
 
@@ -21,7 +22,7 @@ public class GameData implements Serializable, IMementoOriginator {
     private MathGame mathGame;
     private WordGame wordGame;
     private int gameType, playerTurn, gameTurn,
-            playerRollBack, playerRollBackSP, rollbackMade, replayTurn;
+            playerRollBack, playerRollBackSP, rollbackMade, replayTurn, miniGameTurn;
     private Boolean replayEnd;
     private List<Replay> replays;
     private Replay currentReplay, gameReplay;
@@ -34,7 +35,9 @@ public class GameData implements Serializable, IMementoOriginator {
         this.log = new ArrayList<>();
         this.exit = false;
         this.gameTurn = 0;
-        this.gameType = -1;
+        this.playerTurn = 0;
+        this.miniGameTurn = 0;
+        this.gameType = 0;
         this.mathGame = new MathGame();
         this.wordGame = new WordGame();
         this.playerRollBack = 0;
@@ -44,25 +47,38 @@ public class GameData implements Serializable, IMementoOriginator {
         this.replays = new ArrayList<>();
         this.replaysCurrGame = new ArrayList<>();
         this.gameReplay = new Replay("",gameType);
+        this.currentReplay = new Replay("", gameType);
         this.error = false;
-        initPlayers();
         this.isReplay = false;
+        this.replayEnd = false;
+        initBoardGame();
+        initPlayers();
+        initFileHistory();
     }
 
-    public void newGame(){
-        initBoardGame();
+    public void resetGame(){
+        this.boardGame = new Character[LINE_NUM][COLUMN_NUM];
+        this.log = new ArrayList<>();
         this.exit = false;
         this.gameTurn = 0;
-        this.gameType = -1;
+        this.playerTurn = 0;
+        this.miniGameTurn = 0;
+        this.gameType = 0;
+        this.mathGame = new MathGame();
+        this.wordGame = new WordGame();
         this.playerRollBack = 0;
         this.playerRollBackSP = 0;
         this.rollbackMade = 0;
         this.replayTurn = 0;
         this.replaysCurrGame = new ArrayList<>();
         this.gameReplay = new Replay("",gameType);
+        this.currentReplay = new Replay("", gameType);
         this.error = false;
         this.isReplay = false;
+        this.replayEnd = false;
+        initBoardGame();
         initPlayers();
+        initFileHistory();
     }
 
     public WordGame getWordGame() {return wordGame;}
@@ -175,9 +191,7 @@ public class GameData implements Serializable, IMementoOriginator {
         if(result == -1) return false; //error adding piece to board
         //had piece to pieces list
         if(player.getIsPerson()) {
-            if (player.getTurn() == 5) //didnt chose mini game
-                player.resetTurn();
-            player.addTurn(); //increase turn
+            if(player.getTurn() != 4) player.addTurn(); //increase turn
         }
         gameTurn++;
         changeWhoseTurn(); //change player to play
@@ -300,6 +314,37 @@ public class GameData implements Serializable, IMementoOriginator {
         }
     }
 
+    // -------------------------------------------------------------------------------------------------- Mini Games
+    public String getMathExpression(){
+        return mathGame.getExpression();
+    }
+
+    public String getWords() {
+        return wordGame.getWordsString();
+    }
+
+    public int getMiniGameTurn() { return miniGameTurn; }
+    public void changeMiniGameTurn(){ if( miniGameTurn == 1) this.miniGameTurn = 2; else this.miniGameTurn = 1;}
+
+    public void flipCoinMiniGame(){
+        Random random = new Random();
+        this.miniGameTurn = random.nextInt(2)+1;
+    }
+
+    public void startMathGame(){
+        mathGame.setHasWon(false);
+        mathGame.sortExpression();
+        mathGame.setGameNum(1);
+        mathGame.setStartTime(System.currentTimeMillis());
+    }
+
+    public void startWordsGame(){
+        wordGame.setHasWon(false);
+        wordGame.add5Words();
+        wordGame.setSec();
+        wordGame.setStartTime(System.currentTimeMillis());
+    }
+
     // -------------------------------------------------------------------------------------------------- Memento
     @Override
     public Memento getMemento() throws IOException {
@@ -316,6 +361,7 @@ public class GameData implements Serializable, IMementoOriginator {
         this.Player2 = play.Player2;
         this.playerTurn = play.playerTurn;
         this.gameTurn = play.gameTurn;
+        this.miniGameTurn = play.miniGameTurn;
         if(this.playerRollBack == 1){
             if(this.playerRollBackSP > play.Player1.getSpecialPiece())
                 this.Player1.setSpecialPiece(Player1.getSpecialPiece()-1);
@@ -337,7 +383,9 @@ public class GameData implements Serializable, IMementoOriginator {
     public void setReplay(Replay replay) { this.replays.add(replay);}
 
     public String getReplaysByNum(int num){
-        return replays.get(num-1).getTitle();
+        if(replays.size()>=num)
+            return replays.get(num-1).getTitle();
+        else return "";
     }
 
     public void addNewReplay() {
@@ -360,7 +408,7 @@ public class GameData implements Serializable, IMementoOriginator {
         }
     }
 
-    public void getFileHistory(){
+    public void initFileHistory(){
         try{
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Filename));
             replays = (List<Replay>) ois.readObject();
@@ -397,6 +445,38 @@ public class GameData implements Serializable, IMementoOriginator {
         return GAME_MODE + currentReplay.getGameTypeString() + NOW_PLAYING + snap.getWhosPlayingString()+
                 "\nPlayer 1: " + p1.getPlayerInfoString() + "\nPlayer 2: " +p2.getPlayerInfoString() + "\n\n"
                 + boardGameReplayString(snap.getBoardGameReplay());
+    }
+
+    public ReplaySnapshot getSnapShot(){ return currentReplay.getStackReplay().get(this.replayTurn);}
+
+    public String getReplayPlayer1Name(){ return getSnapShot().getPlayer1Replay().getName();}
+    public String getReplayPlayer2Name(){ return getSnapShot().getPlayer2Replay().getName();}
+
+    public int getReplayPlayer1Credits(){ return getSnapShot().getPlayer1Replay().getCredits();}
+    public int getReplayPlayer2Credits(){ return getSnapShot().getPlayer2Replay().getCredits();}
+
+    public int getReplayPlayer1SP(){ return getSnapShot().getPlayer1Replay().getSpecialPiece();}
+    public int getReplayPlayer2SP(){ return getSnapShot().getPlayer2Replay().getSpecialPiece();}
+
+    public int getReplayPlayer1Turn(){ return getSnapShot().getPlayer1Replay().getTurn();}
+    public int getReplayPlayer2Turn(){ return getSnapShot().getPlayer2Replay().getTurn();}
+
+    public String getReplayGameModeString(){ return currentReplay.getGameTypeString(); }
+    public String getReplayWhosPlaying(){ return getSnapShot().getWhosPlayingString();}
+    public int getReplayGameMode(){ return currentReplay.getGameType(); }
+
+    public int getReplaypieceOnPos(int L, int C){
+           return getSnapShot().getReplaypieceOnPos(L,C);
+    }
+
+    public String getReplaysTitle(){
+        StringBuilder phrase = new StringBuilder();
+        int count = 1;
+        for(Replay r : replays){
+            phrase.append(count).append(" - ").append(r.getTitle()).append("\n");
+            count++;
+        }
+        return phrase.toString();
     }
 
     public void setReplayTurn(int num){
@@ -443,7 +523,7 @@ public class GameData implements Serializable, IMementoOriginator {
         }
     }
 
-    public void saveGame(File filename){
+    public void saveGame(File filename, Stack<Memento> stackHist, Stack<Memento> stackRedo){
         try{
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename));
             oos.writeObject(this);
@@ -462,6 +542,7 @@ public class GameData implements Serializable, IMementoOriginator {
         this.wordGame = game.wordGame;
         this.gameType = game.gameType;
         this.playerTurn = game.playerTurn;
+        this.miniGameTurn = game.miniGameTurn;
         this.playerRollBack = game.playerRollBack;
         this.playerRollBackSP = game.playerRollBackSP;
         this.rollbackMade = game.rollbackMade;
@@ -470,6 +551,11 @@ public class GameData implements Serializable, IMementoOriginator {
         this.replays = game.replays;
         this.currentReplay = game.currentReplay;
         this.replaysCurrGame = game.replaysCurrGame;
+        this.gameTurn = game.gameTurn;
+        this.log = game.log;
+        this.gameReplay = game.gameReplay;
+        this.error = game.error;
+        this.isReplay = game.isReplay;
     }
 
     // -------------------------------------------------------------------------------------------------- Logs
@@ -495,5 +581,18 @@ public class GameData implements Serializable, IMementoOriginator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getHowToPlayString(Situation currentSituation){
+        String howToPlay = null;
+        switch (currentSituation){
+            case AwaitBeginning -> howToPlay=AWAITBEGINNING_HTP;
+            case AwaitDecision -> howToPlay=AWAITDECISION_HTP;
+            case AwaitPickingGameMode -> howToPlay=AWAITPICKINGGAMEMODE_HTP;
+            case AwaitPickingNames -> howToPlay=AWAITPICKINGNAMESHTP;
+            case AwaitPickingReplay -> howToPlay=AWAITPICKINGREPLAY_HTP;
+            case AwaitSpecialPiece -> howToPlay=AWAITSPECIALPIECE_HTP;
+        }
+        return howToPlay;
     }
 }

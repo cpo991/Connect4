@@ -23,55 +23,35 @@ public class AwaitPickingNames extends StateAdapter{
 
     @Override
     public IState pickNames(String name1, String name2) {
-        if(game.getGameType() == 1 && (player1.getName().equals("Player 1"))) { //player 1 doesn't have name
-            player1.setName(name1);
-            player1.setIsPerson(true);
-            game.addLog("AwaitPickingNames - Player 1 name was set to "+name1);
-            Utils.launchLog("AwaitPickingNames", "Player 1 name was set to "+name1);
+        if((game.getGameType() == 1)||(game.getGameType() == 2) && (player1.getName().equals("Player 1"))) { //player 1 doesn't have name
+            if(!name1.equals("")){
+                player1.setName(name1);
+                player1.setIsPerson(true);
+                game.addLog("AwaitPickingNames - Player 1 name was set to "+name1);
+                Utils.launchLog("AwaitPickingNames", "Player 1 name was set to "+name1);
+            }else {
+                game.addLog("AwaitPickingNames - Player 1 name was set to default name Player 1");
+                Utils.launchLog("AwaitPickingNames", "Player 1 name was set to default name Player 1");
+            }
         }
         if(game.getGameType() == 1 && !player1.getName().equals("Player 1")){ // player 1 has name
             if(player1.getName().equals(name2)) // player 1 name = name
-                return new AwaitPickingNames(getGame());
+                return this;
             else {
-                player2.setIsPerson(true);
-                player2.setName(name2);
-                game.addLog("AwaitPickingNames - Player 2 name was set to "+name2);
-                Utils.launchLog("AwaitPickingNames","Player 2 name was set to "+name2);
+                if(!name2.equals("")) {
+                    player2.setIsPerson(true);
+                    player2.setName(name2);
+                    game.addLog("AwaitPickingNames - Player 2 name was set to " + name2);
+                    Utils.launchLog("AwaitPickingNames", "Player 2 name was set to " + name2);
+                }
+                else {
+                    game.addLog("AwaitPickingNames - Player 2 name was set to default name Player 2");
+                    Utils.launchLog("AwaitPickingNames", "Player 2 name was set to default name Player 2");
+                }
             }
-        }
-        if(game.getGameType() == 2) {
-            player1.setName(name1);
-            player1.setIsPerson(true);
-            game.addLog("AwaitPickingNames - Player 1 name was set to "+name1);
-            Utils.launchLog("AwaitPickingNames","Player 1 name was set to "+name1);
         }
         game.addSnapShot();
         return new AwaitDecision(game);
-        /*if(game.getGameType() == 1 && (player1.getName().equals("Player 1"))) { //player 1 doesn't have name
-            player1.setName(name);
-            player1.setIsPerson(true);
-            game.addLog("AwaitPickingNames - Player 1 name was set to "+name);
-            Utils.launchLog("AwaitPickingNames", "Player 1 name was set to "+name);
-            return new AwaitPickingNames(game);
-        }
-        if(game.getGameType() == 1 && !player1.getName().equals("Player 1")){ // player 1 has name
-            if(player1.getName().equals(name)) // player 1 name = name
-                return new AwaitPickingNames(getGame());
-            else {
-                player2.setIsPerson(true);
-                player2.setName(name);
-                game.addLog("AwaitPickingNames - Player 2 name was set to "+name);
-                Utils.launchLog("AwaitPickingNames","Player 2 name was set to "+name);
-            }
-        }
-        if(game.getGameType() == 2) {
-            player1.setName(name);
-            player1.setIsPerson(true);
-            game.addLog("AwaitPickingNames - Player 1 name was set to "+name);
-            Utils.launchLog("AwaitPickingNames","Player 1 name was set to "+name);
-        }
-        game.addSnapShot();
-        return new AwaitDecision(game);*/
     }
 
     @Override

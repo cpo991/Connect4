@@ -36,6 +36,7 @@ public class Replay implements Serializable {
             default -> "Not Defined";
         };
     }
+    public int getGameType(){ return gameType;}
 
     public void addSnapshot(ReplaySnapshot snapshot){
         this.replays.add(snapshot);

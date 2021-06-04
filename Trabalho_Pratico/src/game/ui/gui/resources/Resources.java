@@ -1,5 +1,6 @@
 package game.ui.gui.resources;
 
+
 import java.io.InputStream;
 
 public class Resources {

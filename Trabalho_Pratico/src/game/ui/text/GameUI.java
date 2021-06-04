@@ -16,15 +16,15 @@ public class GameUI {
             switch (stateMachine.getCurrentSituation()) {
                 case AwaitBeginning -> AwaitBeginningUI();
                 case AwaitDecision -> AwaitDecisionUI();
-                case AwaitGameMode -> AwaitGameModeUI();
-                case AwaitGamePicker -> AwaitGamePickerUI();
+                case AwaitPickingGameMode -> AwaitGameModeUI();
+                case AwaitPickingGame -> AwaitGamePickerUI();
                 case AwaitPickingReplay -> AwaitPickingReplayUI();
                 case AwaitPickingNames -> AwaitPickingNamesUI();
                 case AwaitReplay -> AwaitReplayUI();
                 case EndGame -> EndGameUI();
                 case AwaitPickingRollback -> AwaitPickingRollbackUI();
-                case AwaitMathAnswer -> AwaitMathAnswerUI();
-                case AwaitWordsAnswer -> AwaitWordsAnswerUI();
+                //case AwaitMathAnswer -> AwaitMathAnswerUI();
+                //case AwaitWordsAnswer -> AwaitWordsAnswerUI();
                 case AwaitSpecialPiece -> AwaitSpecialPieceUI();
                 case AwaitPickingLoadGame -> AwaitPickingLoadGameUI();
                 case AwaitSaveGameFile -> AwaitSaveGameFile();
@@ -122,7 +122,7 @@ public class GameUI {
 
     private void AwaitMathAnswerUI() {
         System.out.println("Solve this:");
-        System.out.println(stateMachine.getMath());
+        System.out.println(stateMachine.getMathExpression());
         stateMachine.insertMathAnswer(askDouble("> "));
     }
 

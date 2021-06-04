@@ -1,22 +1,12 @@
 
-AwaitBeginning - New game was initiated
-			Player 1 and Player 2 were created.
-			The player who will start playing is the Player 1
-AwaitGamePicker - Game Mode was set to: Player vs Player
-AwaitPickingNames - Player 1 name was set to Max
-AwaitPickingNames - Player 2 name was set to Carol
-AwaitDecision - Max put a piece on the column 4
-AwaitDecision - Carol put a piece on the column 5
-AwaitDecision - Max put a piece on the column 3
-AwaitDecision - Carol put a piece on the column 4
-AwaitDecision - Max put a piece on the column 5
-AwaitDecision - Carol put a piece on the column 3
-AwaitDecision - Max put a piece on the column 5
-AwaitDecision - Carol put a piece on the column 2
-AwaitDecision - Max put a piece on the column 1
-AwaitDecision - Carol put a piece on the column 7
-AwaitDecision - Max put a piece on the column 6
-AwaitDecision - Carol put a piece on the column 4
-AwaitDecision - Max put a piece on the column 1
-AwaitDecision - Carol put a piece on the column 5
-AwaitDecision - Carol has won
+AwaitPickingReplay - Replay 2 chosen
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Next replay...
+AwaitReplay - Replay Ended
